@@ -27,6 +27,7 @@ class HomeViewModel(val database: UnlockDatabaseDAO, application: Application) :
             if (database.getTableCount()==0)
             {
                 Log.i("Test","database is empty")
+                // this check doesn't work. i need to somehow have the application start with at least one unlock.
                 database.Insert(UnlockEvent())
             }
         }
