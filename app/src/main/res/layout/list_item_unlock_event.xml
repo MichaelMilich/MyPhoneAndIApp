@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="unlockEvent"
+            type="millich.michael.myphoneandi.database.UnlockEvent" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/tag_image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:rotation="90"
+            tools:srcCompat="@drawable/ic_dot"
+            app:unlockTimeTag="@{unlockEvent}"/>
+
+        <TextView
+            android:id="@+id/unlock_id"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tag_image"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Unlock #1"
+            app:unlockIdText="@{unlockEvent}"/>
+
+        <TextView
+            android:id="@+id/unlock_time"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="@+id/unlock_id"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/unlock_id"
+            app:layout_constraintTop_toBottomOf="@+id/unlock_id"
+            tools:text="8:45:50"
+            app:unlockTimeText="@{unlockEvent}"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
