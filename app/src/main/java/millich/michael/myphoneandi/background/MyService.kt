@@ -91,11 +91,11 @@ class MyService: Service() {
             PendingIntent.FLAG_CANCEL_CURRENT)
 
         val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID_1)
-            .setSmallIcon(R.drawable.ic_launcher_background) // notification icon
+            .setSmallIcon(R.drawable.ic_my_phone_and_i_foreground) // notification icon
             .setContentTitle(title) // title for notification
             .setContentText(message)// message for notification
             .setContentIntent(pendingIntent)
-            .addAction(R.drawable.ic_launcher_background,applicationContext.resources.getString(R.string.stop_service),pendingStopIntent)
+            .addAction(R.drawable.ic_my_phone_and_i_foreground,applicationContext.resources.getString(R.string.stop_service),pendingStopIntent)
             .build()
 
         startForeground(ONGOING_NOTIFICATION_ID,notification)

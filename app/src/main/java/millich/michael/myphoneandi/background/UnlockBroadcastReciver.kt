@@ -39,12 +39,12 @@ object UnlockBroadcastReceiver : BroadcastReceiver() {
         val pendingStopIntent = PendingIntent.getService(context,0,stopIntent, PendingIntent.FLAG_CANCEL_CURRENT)
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID_1)
-            .setSmallIcon(R.drawable.ic_launcher_background) // notification icon
+            .setSmallIcon(R.drawable.ic_my_phone_and_i_foreground) // notification icon
             .setContentTitle(title) // title for notification
             .setContentText(message)// message for notification
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .addAction(R.drawable.ic_launcher_background,context.resources.getString(R.string.stop_service),pendingStopIntent)
+            .addAction(R.drawable.ic_my_phone_and_i_foreground,context.resources.getString(R.string.stop_service),pendingStopIntent)
             .build()
         mNotificationManager.notify(ONGOING_NOTIFICATION_ID, notification)
     }
