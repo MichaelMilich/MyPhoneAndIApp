@@ -76,7 +76,7 @@ abstract class UnlockDatabase : RoomDatabase() {
                         // Migration is not part of this lesson. You can learn more about
                         // migration with Room in this blog post:
                         // https://medium.com/androiddevelopers/understanding-migrations-with-room-f01e04b07929
-                        .fallbackToDestructiveMigration().build()
+                        .fallbackToDestructiveMigration().createFromAsset("database/unlock_event_table.db").build()
                     // Assign INSTANCE to the newly created database.
                     INSTANCE = instance
                 }

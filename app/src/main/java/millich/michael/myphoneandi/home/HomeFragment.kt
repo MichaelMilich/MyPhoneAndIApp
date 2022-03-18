@@ -66,8 +66,8 @@ class HomeFragment : Fragment() {
             }
         })
 
-        binding.clockView.binding.lifecycleOwner=this
-        binding.lifecycleOwner = this
+        binding.clockView.binding.lifecycleOwner=viewLifecycleOwner
+        binding.lifecycleOwner = viewLifecycleOwner
         binder=binding
         clockView=binder.clockView
         return binding.root
