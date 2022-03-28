@@ -6,7 +6,6 @@ import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
-import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.lifecycle.*
@@ -53,12 +52,18 @@ class HomeViewModel(val database: UnlockDatabaseDAO, application: Application) :
             return _isAfter12Am
         }
 
-    private val _unlockEvents=if(isAfter12Am.value!!){ database.getAllUnlcoksFromTime(getToday12AmInMilli()) }
+    private val _unlockEvents12H=if(isAfter12Am.value!!){ database.getAllUnlcoksFromTime(getToday12AmInMilli()) }
     else{ database.getAllUnlcoksFromTime(getCurrentDateInMilli()) }
 
-    val unlockEvents : LiveData<List<UnlockEvent>>
+    val unlockEvents12H : LiveData<List<UnlockEvent>>
         get() {
-            return  _unlockEvents
+            return  _unlockEvents12H
+        }
+
+    private val _unlockEvents24H = database.getAllUnlcoksFromTime(getCurrentDateInMilli())
+    val unlockEvents24H : LiveData<List<UnlockEvent>>
+        get() {
+            return  _unlockEvents24H
         }
 
     /** Defines callbacks for service binding, passed to bindService()  */
@@ -92,7 +97,7 @@ class HomeViewModel(val database: UnlockDatabaseDAO, application: Application) :
         _intent.action = START_MY_SERVICE
         val pendingIntent = PendingIntent.getService(context, START_MY_SERVICE_INT,_intent,PendingIntent.FLAG_IMMUTABLE)
         context.startForegroundService(_intent)
-        //Intent(context,MyService::class.java).also { intent -> context.bindService(intent,connection,0) }
+        Intent(context,MyService::class.java).also { intent -> context.bindService(intent,connection,0) }
     }
     fun stop(){
         context.unbindService(connection)

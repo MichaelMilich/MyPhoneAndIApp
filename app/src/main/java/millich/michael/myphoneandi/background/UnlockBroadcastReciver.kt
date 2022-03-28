@@ -15,6 +15,7 @@ import millich.michael.myphoneandi.database.UnlockEvent
 
 object UnlockBroadcastReceiver : BroadcastReceiver() {
 
+
     override fun onReceive(context: Context, intent: Intent) {
         val database = UnlockDatabase.getInstance(context).unlockDatabaseDAO
         val unlockEvent = UnlockEvent()
@@ -23,7 +24,7 @@ object UnlockBroadcastReceiver : BroadcastReceiver() {
                 database.Insert(unlockEvent)
                 val newUnlock = database.getLastUnlock()
                 val unlockCount =database.getTodayUnlocksCountAfterTimeNoLiveData(getCurrentDateInMilli())
-                showNotification(context," $unlockCount  unlocks today" ,"last time at = ${formatDateFromMillisecondsLong(newUnlock!!.eventTime)}")
+                showNotification(context," $unlockCount  unlocks today" ,"last time at ${formatDateFromMillisecondsLong(newUnlock!!.eventTime)}")
             }
         }
 
@@ -39,12 +40,12 @@ object UnlockBroadcastReceiver : BroadcastReceiver() {
         val pendingStopIntent = PendingIntent.getService(context,0,stopIntent, PendingIntent.FLAG_IMMUTABLE)
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID_1)
-            .setSmallIcon(R.drawable.ic_my_phone_and_i_foreground) // notification icon
+            .setSmallIcon(R.drawable.ic_my_phone_and_i_notification_option2) // notification icon
             .setContentTitle(title) // title for notification
             .setContentText(message)// message for notification
             .setContentIntent(pendingIntent)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .addAction(R.drawable.ic_my_phone_and_i_foreground,context.resources.getString(R.string.stop_service),pendingStopIntent)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .addAction(R.drawable.ic_my_phone_and_i_notification_option2,context.resources.getString(R.string.stop_service),pendingStopIntent)
             .build()
         mNotificationManager.notify(ONGOING_NOTIFICATION_ID, notification)
     }

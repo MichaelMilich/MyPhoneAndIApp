@@ -48,7 +48,7 @@ class MyService: Service() {
         }
 
         if(isServiceRunning)
-            return super.onStartCommand(intent, flags, startId)
+            return Service.START_STICKY
 
         runBlocking { launch {
             val unlockCount =database.getTodayUnlocksCountAfterTimeNoLiveData(getCurrentDateInMilli())
@@ -57,7 +57,7 @@ class MyService: Service() {
 
         registerReceiver(UnlockBroadcastReceiver, IntentFilter(Intent.ACTION_USER_PRESENT))
         isServiceRunning=true
-        return super.onStartCommand(intent, flags, startId)
+        return Service.START_STICKY
     }
 
     override fun onDestroy() {
@@ -74,7 +74,7 @@ class MyService: Service() {
             NotificationChannel(
                 CHANNEL_ID_1,
                 CHANNEL_NAME_1,
-                NotificationManager.IMPORTANCE_DEFAULT)
+                NotificationManager.IMPORTANCE_LOW)
         channel.description = CHANNEL_DESCRIPTION_1
         mNotificationManager.createNotificationChannel(channel)
 
@@ -89,11 +89,11 @@ class MyService: Service() {
         )
 
         val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID_1)
-            .setSmallIcon(R.drawable.ic_my_phone_and_i_foreground) // notification icon
+            .setSmallIcon(R.drawable.ic_my_phone_and_i_notification_option2) // notification icon
             .setContentTitle(title) // title for notification
             .setContentText(message)// message for notification
             .setContentIntent(pendingIntent)
-            .addAction(R.drawable.ic_my_phone_and_i_foreground,applicationContext.resources.getString(R.string.stop_service),pendingStopIntent)
+            .addAction(R.drawable.ic_my_phone_and_i_notification_option2,applicationContext.resources.getString(R.string.stop_service),pendingStopIntent)
             .build()
 
         startForeground(ONGOING_NOTIFICATION_ID,notification)

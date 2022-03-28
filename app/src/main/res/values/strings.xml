@@ -3,4 +3,5 @@
     <string name="stop_service">Stop This Service</string>
     <string name="start_service">Start Service</string>
     <string name="analog_clock_content_description">A cool representation of the time for noting when you opened the phone</string>
+    <string name="unlock_list_description">A list to show you how many unlocks, Wow such empty</string>
 </resources>

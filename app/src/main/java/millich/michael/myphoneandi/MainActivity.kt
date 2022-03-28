@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
             NotificationChannel(
                 CHANNEL_ID_1,
                 CHANNEL_NAME_1,
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_LOW
             )
         channel.description = CHANNEL_DESCRIPTION_1
         mNotificationManager.createNotificationChannel(channel)

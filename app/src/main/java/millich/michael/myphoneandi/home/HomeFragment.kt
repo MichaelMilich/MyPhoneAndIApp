@@ -52,7 +52,7 @@ class HomeFragment : Fragment() {
 
 
 
-        viewModel.unlockEvents.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.unlockEvents12H.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             it?.let {
                 if(it.isNotEmpty()) {
                     val firstId = it[it.size - 1].eventId - 1
@@ -62,6 +62,17 @@ class HomeFragment : Fragment() {
                     callClockViewTags(it)
                 }
                 adapter.submitList(it)
+            }
+        })
+        viewModel.unlockEvents24H.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            it?.let {
+                if(it.isNotEmpty()) {
+                    val firstId = it[it.size - 1].eventId - 1
+                    for (event in it)
+                        event.eventId -= firstId
+
+                    adapter.submitList(it)
+                }
             }
         })
 
