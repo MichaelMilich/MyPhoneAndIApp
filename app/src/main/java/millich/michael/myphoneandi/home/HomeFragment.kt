@@ -1,7 +1,6 @@
 package millich.michael.myphoneandi.home
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -75,7 +74,6 @@ class HomeFragment : Fragment() {
     private fun callClockViewTags(eventList: List<UnlockEvent>){
         viewLifecycleOwner.lifecycleScope.launch {
             clockView.afterMeasured {
-                Log.i("Test","after Measured width of clock_view is =${clockView.binding.analogClockView.width}")
                 clockView.createTimeTags(eventList,(clockView.binding.analogClockView.width/2).toFloat()+0.5f)
             }
         }

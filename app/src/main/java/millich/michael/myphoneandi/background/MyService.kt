@@ -42,7 +42,6 @@ class MyService: Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if(STOP_MY_SERVICE == intent!!.action)
         {
-            Log.i("Test", "Called to stop the service")
             val mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             mNotificationManager.cancel(ONGOING_NOTIFICATION_ID)
             stopSelf()
@@ -71,24 +70,23 @@ class MyService: Service() {
     @SuppressLint("UnspecifiedImmutableFlag")
     suspend fun showNotificationAndStartForeground(title: String, message: String) {
         val mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val channel = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val channel =
             NotificationChannel(
                 CHANNEL_ID_1,
                 CHANNEL_NAME_1,
                 NotificationManager.IMPORTANCE_DEFAULT)
-        } else {
-            TODO("VERSION.SDK_INT < O")
-        }
         channel.description = CHANNEL_DESCRIPTION_1
         mNotificationManager.createNotificationChannel(channel)
 
         val intent = Intent(applicationContext, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
         val stopIntent = Intent(applicationContext, MyService::class.java)
         stopIntent.action= STOP_MY_SERVICE
-        val pendingStopIntent = PendingIntent.getService(applicationContext,0,stopIntent,
-            PendingIntent.FLAG_CANCEL_CURRENT)
+        val pendingStopIntent = PendingIntent.getService(
+            applicationContext, 0, stopIntent,
+            PendingIntent.FLAG_IMMUTABLE,
+        )
 
         val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID_1)
             .setSmallIcon(R.drawable.ic_my_phone_and_i_foreground) // notification icon

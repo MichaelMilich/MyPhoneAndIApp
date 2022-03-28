@@ -42,19 +42,15 @@ class ClockView : RelativeLayout {
     private lateinit var viewModel: HomeViewModel
     private var eventViewMap : MutableMap<Long, ImageView> = mutableMapOf()
     private fun test1() {
-        Log.i("Test", "Function called from constuctor 1")
     }
 
     private fun test2() {
-        Log.i("Test", "Function called from constuctor 2")
     }
 
     private fun test3() {
-        Log.i("Test", "Function called from constuctor 3")
     }
 
     private fun test4() {
-        Log.i("Test", "Function called from constuctor 4")
     }
 
     fun onBind() {
@@ -72,7 +68,6 @@ class ClockView : RelativeLayout {
             binding.analogClockView.setImageResource(R.drawable.ic_analog_clock_0_12)
     }
     fun createTimeTags(eventList: List<UnlockEvent>, radius: Float) {
-        Log.i("Test", "radius is $radius")
         for (event in eventList) {
             val key = event.eventId
             if (!eventViewMap.containsKey(key)) {

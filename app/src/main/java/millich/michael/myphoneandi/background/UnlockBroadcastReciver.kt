@@ -32,11 +32,11 @@ object UnlockBroadcastReceiver : BroadcastReceiver() {
     private fun showNotification(context: Context, title: String, message: String) {
         val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val intent = Intent(context, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
         val stopIntent = Intent(context, MyService::class.java)
         stopIntent.action= STOP_MY_SERVICE
-        val pendingStopIntent = PendingIntent.getService(context,0,stopIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+        val pendingStopIntent = PendingIntent.getService(context,0,stopIntent, PendingIntent.FLAG_IMMUTABLE)
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID_1)
             .setSmallIcon(R.drawable.ic_my_phone_and_i_foreground) // notification icon

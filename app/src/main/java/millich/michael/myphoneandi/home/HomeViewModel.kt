@@ -2,6 +2,7 @@ package millich.michael.myphoneandi.home
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
@@ -21,12 +22,9 @@ class HomeViewModel(val database: UnlockDatabaseDAO, application: Application) :
     @SuppressLint("StaticFieldLeak")
     private val context = getApplication<Application>().applicationContext
     init {
-        Log.i("Test","ViewModel started")
         viewModelScope.launch {
-            Log.i("Test","viewModelScope adtabase to string = ${database.toString()}")
             if (database.getTableCount()==0)
             {
-                Log.i("Test","database is empty")
                 // this check doesn't work. i need to somehow have the application start with at least one unlock.
                 database.Insert(UnlockEvent())
             }
@@ -92,16 +90,16 @@ class HomeViewModel(val database: UnlockDatabaseDAO, application: Application) :
         _buttonsVisible.value=true
         val _intent = Intent(context, MyService::class.java)
         _intent.action = START_MY_SERVICE
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(_intent)
-        }
-        Intent(context,MyService::class.java).also { intent -> context.bindService(intent,connection,0) }
+        val pendingIntent = PendingIntent.getService(context, START_MY_SERVICE_INT,_intent,PendingIntent.FLAG_IMMUTABLE)
+        context.startForegroundService(_intent)
+        //Intent(context,MyService::class.java).also { intent -> context.bindService(intent,connection,0) }
     }
     fun stop(){
         context.unbindService(connection)
         _buttonsVisible.value =false
         val _intent = Intent(context, MyService::class.java)
         _intent.action = STOP_MY_SERVICE
+        val pendingIntent = PendingIntent.getService(context, STOP_MY_SERVICE_INT,_intent,PendingIntent.FLAG_IMMUTABLE)
         context.stopService(_intent)
     }
 

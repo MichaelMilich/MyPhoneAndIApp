@@ -28,8 +28,10 @@ const val CHANNEL_DESCRIPTION_1 ="Channel for my application to show live data"
 const val ONGOING_NOTIFICATION_ID=1234
 
 const val STOP_MY_SERVICE="STOP_MY_SERVICE"
+const val STOP_MY_SERVICE_INT=10
 
 const val START_MY_SERVICE="START_MY_SERVICE"
+const val START_MY_SERVICE_INT=11
 
 fun formatDateFromMillisecondsLong( long: Long) :String
 {
