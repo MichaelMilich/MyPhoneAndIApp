@@ -1,7 +1,6 @@
 package millich.michael.myphoneandi.background
 
-import android.annotation.SuppressLint
-import android.app.NotificationChannel
+
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
@@ -9,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Binder
-import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -19,8 +17,12 @@ import millich.michael.myphoneandi.*
 import millich.michael.myphoneandi.database.UnlockDatabase
 import millich.michael.myphoneandi.database.UnlockDatabaseDAO
 
+/**
+ * The service that runs with the application.
+ * Does not run on it's own process but uses corutines for any action
+ */
 class MyService: Service() {
-
+    // creating the interface for the connection between the servie and viewmodel.
     inner class LocalBinder : Binder() {
         fun getService() : MyService =this@MyService
     }
@@ -32,6 +34,9 @@ class MyService: Service() {
         return binder
     }
 
+    /**
+     * Set up the service
+     */
     override fun onCreate() {
         super.onCreate()
         val application = requireNotNull(this).application
@@ -39,27 +44,36 @@ class MyService: Service() {
         isServiceRunning=false
     }
 
+    /**
+     * The function called when starting the service.
+     * This function is called via many parts of the app.
+     * if we want to stop the service from notification we send an intent to this function with STOP_MY_SERVICE extra.
+     * Else the service is eaither runing already so we dont need to do anything or we should set up the broadcast reciever from corutines.
+     */
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if(STOP_MY_SERVICE == intent!!.action)
         {
-            val mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            mNotificationManager.cancel(ONGOING_NOTIFICATION_ID)
             stopSelf()
+            return super.onStartCommand(intent, flags, startId)
         }
 
-        if(isServiceRunning)
-            return Service.START_STICKY
+        if(isServiceRunning) {
+            return super.onStartCommand(intent, flags, startId)
+        }
 
         runBlocking { launch {
             val unlockCount =database.getTodayUnlocksCountAfterTimeNoLiveData(getCurrentDateInMilli())
             showNotificationAndStartForeground(" $unlockCount  unlocks today" , "")
         } }
-
         registerReceiver(UnlockBroadcastReceiver, IntentFilter(Intent.ACTION_USER_PRESENT))
         isServiceRunning=true
-        return Service.START_STICKY
+        return super.onStartCommand(intent, flags, startId)
     }
 
+    /**
+     * Claen the service and destroy
+     * Dont froget to unregister reciver.
+     */
     override fun onDestroy() {
         isServiceRunning=false
         stopForeground(true)
@@ -67,17 +81,8 @@ class MyService: Service() {
         super.onDestroy()
     }
 
-    @SuppressLint("UnspecifiedImmutableFlag")
-    suspend fun showNotificationAndStartForeground(title: String, message: String) {
-        val mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val channel =
-            NotificationChannel(
-                CHANNEL_ID_1,
-                CHANNEL_NAME_1,
-                NotificationManager.IMPORTANCE_LOW)
-        channel.description = CHANNEL_DESCRIPTION_1
-        mNotificationManager.createNotificationChannel(channel)
 
+     private fun showNotificationAndStartForeground(title: String, message: String) {
         val intent = Intent(applicationContext, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
@@ -98,4 +103,6 @@ class MyService: Service() {
 
         startForeground(ONGOING_NOTIFICATION_ID,notification)
     }
+
+
 }

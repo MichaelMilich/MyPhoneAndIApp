@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -44,7 +45,6 @@ object UnlockBroadcastReceiver : BroadcastReceiver() {
             .setContentTitle(title) // title for notification
             .setContentText(message)// message for notification
             .setContentIntent(pendingIntent)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
             .addAction(R.drawable.ic_my_phone_and_i_notification_option2,context.resources.getString(R.string.stop_service),pendingStopIntent)
             .build()
         mNotificationManager.notify(ONGOING_NOTIFICATION_ID, notification)

@@ -17,6 +17,11 @@ import millich.michael.myphoneandi.database.UnlockDatabase
 import millich.michael.myphoneandi.database.UnlockEvent
 import millich.michael.myphoneandi.databinding.FragmentHomeBinding
 
+/**
+ * Currently the main fragment in use in the application.
+ * provides the viewModel with al required for it to function.
+ * Sets up the Clock View. as well as database.
+ */
 class HomeFragment : Fragment() {
     private lateinit var viewModel: HomeViewModel
     private lateinit var binder: FragmentHomeBinding
@@ -32,12 +37,14 @@ class HomeFragment : Fragment() {
             container,
             false
         )
+        // all the basic requirements.
         val application = requireNotNull(this.activity).application
         val databaseDAO = UnlockDatabase.getInstance(application).unlockDatabaseDAO
 
         val viewModelFactory = HomeViewModelFactory(application,databaseDAO)
         viewModel = ViewModelProvider(this,viewModelFactory).get(HomeViewModel::class.java)
         binding.viewModel=viewModel
+        // the required code to start/stop the service.
         binding.buttonStartService.setOnClickListener{
             this.context?.let { it1 -> Snackbar.make(it1,it,"Made start", Snackbar.LENGTH_SHORT).show() }
             viewModel.start()
@@ -47,26 +54,32 @@ class HomeFragment : Fragment() {
             viewModel.stop()
         }
 
+        // seting up the adapter for te recycleView
         val adapter = UnlockEventAdapter()
         binding.unlockList.adapter=adapter
 
 
-
+        //Observing changes in the 12H list for the ClockView
         viewModel.unlockEvents12H.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             it?.let {
                 if(it.isNotEmpty()) {
+                    //The id should start from 1, that is why we change the eventid for the given list.
+                        //The given list is always read from the database so we dont get id of -1
                     val firstId = it[it.size - 1].eventId - 1
                     for (event in it)
                         event.eventId -= firstId
-
+                    //Giving the list to the clockView.
                     callClockViewTags(it)
                 }
-                adapter.submitList(it)
             }
         })
+
+        //Observing changes in the 24H list for the recycleView.
         viewModel.unlockEvents24H.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             it?.let {
                 if(it.isNotEmpty()) {
+                    //The id should start from 1, that is why we change the eventid for the given list.
+                    //The given list is always read from the database so we dont get id of -1
                     val firstId = it[it.size - 1].eventId - 1
                     for (event in it)
                         event.eventId -= firstId
