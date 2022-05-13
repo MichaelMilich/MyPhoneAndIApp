@@ -58,7 +58,7 @@ class MyService: Service() {
         }
 
         if(isServiceRunning) {
-            return super.onStartCommand(intent, flags, startId)
+            return Service.START_STICKY
         }
 
         runBlocking { launch {
@@ -67,7 +67,7 @@ class MyService: Service() {
         } }
         registerReceiver(UnlockBroadcastReceiver, IntentFilter(Intent.ACTION_USER_PRESENT))
         isServiceRunning=true
-        return super.onStartCommand(intent, flags, startId)
+        return Service.START_STICKY
     }
 
     /**

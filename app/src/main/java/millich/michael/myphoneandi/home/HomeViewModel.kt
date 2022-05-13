@@ -23,10 +23,10 @@ import java.util.*
  */
 class HomeViewModel(val database: UnlockDatabaseDAO, application: Application) : AndroidViewModel(application) {
     @SuppressLint("StaticFieldLeak")
-    private val context = getApplication<Application>().applicationContext //used for starting an stoping the service.
+    private val context = getApplication<Application>().applicationContext //used for starting an stopping the service.
     init {
-        viewModelScope.launch { // check if the database is empty, if it is insert at least one unlcok.
-            //Currently i am using a prepoplated table so this code doesn't get used.
+        viewModelScope.launch { // check if the database is empty, if it is insert at least one unlock.
+            //Currently i am using a pre-populated table so this code doesn't get used.
             if (database.getTableCount()==0)
             {
                 // this check doesn't work. i need to somehow have the application start with at least one unlock.
@@ -84,7 +84,6 @@ class HomeViewModel(val database: UnlockDatabaseDAO, application: Application) :
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             val binder = service as MyService.LocalBinder
-            //mService = binder.getService()
             _buttonsVisible.value=true
         }
 
@@ -103,7 +102,7 @@ class HomeViewModel(val database: UnlockDatabaseDAO, application: Application) :
 
     /**
      * When starting the Service, also bind to it.
-     * The Service is foregroumd, but we can easilt change that with calling context.startService(_intent)
+     * The Service is foreground, but we can easily change that with calling context.startService(_intent)
      */
     fun start(){
         _buttonsVisible.value=true
