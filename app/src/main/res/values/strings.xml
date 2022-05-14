@@ -6,4 +6,15 @@
     <string name="unlock_list_description">A list to show you how many unlocks, Wow such empty</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="on_boarding_done">Done!</string>
+    <string name="on_boarding_done_text_permission_given">Thanks! \n Enjoy the application.</string>
+    <string name="on_boarding_done_text_permission_denied">That is OK :) \n you can always change your mind later. \n keep in mind that the application will not run as smoothly. \n Enjoy the application.</string>
+    <string name="move_to_app">Lets go</string>
+    <string name="welcome"> Welcome!</string>
+    <string name="welcome_text">Thank you for downloading this app. \n In order to make this application run smoothly we ask you to enable the application with some permissions.</string>
+    <string name="battery_optimization_permission">battery optimization</string>
+    <string name="battery_optimization_explanation">Please mark this application to be excluded from battery optimization. \n This will make the application run until you decide to stop</string>
+    <string name="button_enable_battery_optimization">Enable</string>
+    <string name="button_skip_permission_battery_optimization">Skip</string>
+    <string name="show_me_how">show me how</string>
 </resources>

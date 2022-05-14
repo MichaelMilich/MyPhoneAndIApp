@@ -5,12 +5,20 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.navigation.Navigation.findNavController
+import androidx.navigation.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import millich.michael.myphoneandi.R
+import millich.michael.myphoneandi.databinding.FragmentThirdScreenBinding
+import millich.michael.myphoneandi.onboarding.ViewPagerViewModel
 
-class ThirdScreen : Fragment() {
+class ThirdScreen(val viewModel: ViewPagerViewModel) : Fragment() {
+    private lateinit var textView: TextView
 
 
     override fun onCreateView(
@@ -18,16 +26,16 @@ class ThirdScreen : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_third_screen, container, false)
-
-        val viewPager =  activity?.findViewById<ViewPager2>(R.id.view_pager)
-
-        val next = activity?.findViewById<TextView>(R.id.finish)
-        next?.setOnClickListener {
-            findNavController(next).navigate(R.id.action_viewPagerFragment_to_homeFragment)
+        val binding : FragmentThirdScreenBinding = DataBindingUtil.inflate(inflater,R.layout.fragment_third_screen, container, false)
+        binding.button.setOnClickListener{
+            viewModel.writeOnBoarding()
+            binding.root.findNavController().navigate(R.id.action_viewPagerFragment_to_homeFragment)
         }
+        binding.viewModel=viewModel
+        textView=binding.description3
 
-        return view
+        return binding.root
     }
+
 
 }

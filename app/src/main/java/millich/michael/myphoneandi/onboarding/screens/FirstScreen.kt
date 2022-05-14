@@ -6,28 +6,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.databinding.DataBindingUtil
 import androidx.viewpager2.widget.ViewPager2
 import millich.michael.myphoneandi.R
+import millich.michael.myphoneandi.databinding.FragmentFirstScreenBinding
+import millich.michael.myphoneandi.onboarding.ViewPagerViewModel
 
 
-
-class FirstScreen : Fragment() {
+class FirstScreen(val viewModel: ViewPagerViewModel) : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_first_screen, container, false)
-
-        val viewPager =  activity?.findViewById<ViewPager2>(R.id.view_pager)
-
-        val next = activity?.findViewById<TextView>(R.id.next)
-        next?.setOnClickListener {
-            viewPager?.currentItem = 1
+        val binding : FragmentFirstScreenBinding = DataBindingUtil.inflate(inflater,R.layout.fragment_first_screen,container,false)
+        binding.buttonNext.setOnClickListener {
+            viewModel.screenNumber.value=1
         }
+        binding.viewModel=viewModel
 
-        return view
+
+
+        return binding.root
     }
 
 }

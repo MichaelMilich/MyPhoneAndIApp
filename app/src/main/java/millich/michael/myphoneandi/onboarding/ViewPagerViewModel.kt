@@ -1,7 +1,16 @@
 package millich.michael.myphoneandi.onboarding
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class ViewPagerViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+    var screenNumber : MutableLiveData<Int> = MutableLiveData()
+    var isPermissionGiven : MutableLiveData<Boolean> = MutableLiveData()
+    fun checkFirstTime(): Boolean {
+        return true
+    }
+    fun writeOnBoarding(){
+
+    }
 }

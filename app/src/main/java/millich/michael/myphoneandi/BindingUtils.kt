@@ -22,15 +22,18 @@ fun ImageView.setTagImage(item: UnlockEvent){
     setImageResource(R.drawable.ic_dot)
 }
 
-@BindingAdapter("unlockTagView","radius")
-fun ImageView.setTagView(item: UnlockEvent, parentWidth: Float){
-    val angle1 = calculateAngle(item.eventTime)
-    val angle =
-        ((90 - angle1) * 0.017453).toFloat() // 0.017453 = 1 degree to radians
-}
 
 @BindingAdapter("ViewModel")
 fun ClockView.setViewModel(viewModel: HomeViewModel){
     binding.viewModelClock=viewModel
     onBind()
+}
+
+@BindingAdapter("onBoardingText")
+fun TextView.setOnBoardingText(item : Boolean){
+    text = if (item)
+        resources.getText(R.string.on_boarding_done_text_permission_given)
+    else
+        resources.getText(R.string.on_boarding_done_text_permission_denied)
+
 }

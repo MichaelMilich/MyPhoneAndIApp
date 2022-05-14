@@ -2,11 +2,18 @@ package millich.michael.myphoneandi.onboarding
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_DRAGGING
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayoutMediator
 import millich.michael.myphoneandi.R
 import millich.michael.myphoneandi.databinding.FragmentHomeBinding
 import millich.michael.myphoneandi.databinding.FragmentViewPagerBinding
@@ -21,7 +28,7 @@ class ViewPagerFragment : Fragment() {
         fun newInstance() = ViewPagerFragment()
     }
 
-    private lateinit var viewModel: ViewPagerViewModel
+    private lateinit var  viewModel: ViewPagerViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,18 +45,19 @@ class ViewPagerFragment : Fragment() {
         viewModel = ViewModelProvider(this, factory).get(ViewPagerViewModel::class.java)
         binding.viewModel = viewModel
 
-        val fragmentList = arrayListOf<Fragment>(
-            FirstScreen(),
-            SecondScreen(),
-            ThirdScreen()
-        )
 
-        val adapter = ViewPagerAdapter(
-            fragmentList,
+        val adapter = ViewPagerAdapter(viewModel,
             requireActivity().supportFragmentManager,
             lifecycle
         )
         binding.viewPager.adapter=adapter
+        viewModel.screenNumber.value=0
+        viewModel.screenNumber.observe(viewLifecycleOwner, Observer {
+                screenNumber -> binding.viewPager.setCurrentItem(screenNumber,true)
+        })
+        binding.viewPager.isUserInputEnabled =false
+
+        TabLayoutMediator(binding.tabLayout,binding.viewPager) { tab, position -> tab.text =""}.attach()
 
         return binding.root
     }
