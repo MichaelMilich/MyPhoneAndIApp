@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.findNavController
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.snackbar.Snackbar
 import millich.michael.myphoneandi.R
 import millich.michael.myphoneandi.databinding.FragmentThirdScreenBinding
 import millich.michael.myphoneandi.onboarding.ViewPagerViewModel
@@ -37,5 +38,14 @@ class ThirdScreen(val viewModel: ViewPagerViewModel) : Fragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        if (viewModel.isPermissionGiven.value==true)
+        {
+            textView.text=resources.getText(R.string.on_boarding_done_text_permission_given)
+        }
+        else
+            textView.text=resources.getText(R.string.on_boarding_done_text_permission_denied)
+        super.onResume()
+    }
 
 }
