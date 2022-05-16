@@ -13,7 +13,7 @@ import millich.michael.myphoneandi.background.MyService
 
 /**
  * The Main Activity of the application.
- * The application uses a single activity with a lot of fragments and a navigation panel btween them.
+ * The application uses a single activity with a lot of fragments and a navigation panel between them.
  * currently only one fragment.
  */
 class MainActivity : AppCompatActivity() {

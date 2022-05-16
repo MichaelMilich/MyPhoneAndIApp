@@ -41,7 +41,7 @@ class ViewPagerFragment : Fragment() {
                 container,
                 false)
 
-        val factory = ViewPagerViewModelFactory()
+        val factory = ViewPagerViewModelFactory(requireActivity().application)
         viewModel = ViewModelProvider(this, factory).get(ViewPagerViewModel::class.java)
         binding.viewModel = viewModel
 
@@ -56,6 +56,9 @@ class ViewPagerFragment : Fragment() {
                 screenNumber -> binding.viewPager.setCurrentItem(screenNumber,true)
         })
         binding.viewPager.isUserInputEnabled =false
+        viewModel.isPermissionGiven.observe(viewLifecycleOwner, Observer {
+            bool -> if (bool) binding.viewPager.setCurrentItem(2,true)
+        })
 
         TabLayoutMediator(binding.tabLayout,binding.viewPager) { tab, position -> tab.text =""}.attach()
 

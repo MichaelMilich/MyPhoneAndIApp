@@ -30,41 +30,22 @@ class SecondScreen(val viewModel: ViewPagerViewModel) : Fragment() {
         binding.viewModel=viewModel
 
         binding.buttonSkip.setOnClickListener {
-            viewModel.isPermissionGiven.value =false
+           // viewModel.isPermissionGiven.value =false
             viewModel.screenNumber.value=2
         }
         binding.buttonPermission.setOnClickListener {
-            openPowerSettings(requireContext())
-            viewModel.isPermissionGiven.value =true
-            viewModel.screenNumber.value=2
+            //openPowerSettings(requireContext())
         }
         return binding.root
     }
 
     private fun openPowerSettings(context: Context){
-        var intent = Intent()
+        val intent = Intent()
         intent.action = Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS
         context.startActivity(intent)
     }
 
-    override fun onResume() {
-        testBatteryOptimization()
-        super.onResume()
-    }
 
-    private fun testBatteryOptimization(){
-        val intent = Intent()
-        val powerManager = requireContext().applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
-        val packageName = requireContext().applicationContext.packageName
-        if (!powerManager.isIgnoringBatteryOptimizations(packageName))
-        {
-            Log.i("Battery" , "Not ignoring Battery Optimization")
-        }
-        else
-        {
-            Log.i("Battery" , " ignoring Battery Optimization!")
-        }
-    }
 
 
 }
