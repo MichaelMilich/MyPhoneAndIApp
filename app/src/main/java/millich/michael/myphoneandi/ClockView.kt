@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import millich.michael.myphoneandi.database.UnlockEvent
-import millich.michael.myphoneandi.databinding.CockViewBinding
+import millich.michael.myphoneandi.databinding.ClockViewBinding
 import millich.michael.myphoneandi.home.HomeViewModel
 import kotlin.math.cos
 import kotlin.math.sin
@@ -44,7 +44,7 @@ class ClockView : RelativeLayout {
     ) : super(context, attrs, defStyleAttr, defStyleRes) {
         test4()
     }
-    val binding : CockViewBinding = CockViewBinding.inflate(LayoutInflater.from(context),this,true)
+    val binding : ClockViewBinding= ClockViewBinding.inflate(LayoutInflater.from(context),this,true)
     private lateinit var viewModel: HomeViewModel
     private var eventViewMap : MutableMap<Long, ImageView> = mutableMapOf()
     private fun test1() {

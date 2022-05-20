@@ -29,7 +29,7 @@ class ThirdScreen(val viewModel: ViewPagerViewModel) : Fragment() {
         // Inflate the layout for this fragment
         val binding : FragmentThirdScreenBinding = DataBindingUtil.inflate(inflater,R.layout.fragment_third_screen, container, false)
         binding.button.setOnClickListener{
-            viewModel.writeOnBoarding()
+            viewModel.writeOnBoardingFinished()
             binding.root.findNavController().navigate(R.id.action_viewPagerFragment_to_homeFragment)
         }
         binding.viewModel=viewModel

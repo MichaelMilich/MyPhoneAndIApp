@@ -14,16 +14,24 @@ import androidx.lifecycle.ViewModel
 class ViewPagerViewModel(application: Application) : AndroidViewModel(application) {
     var screenNumber : MutableLiveData<Int> = MutableLiveData()
     var isPermissionGiven : MutableLiveData<Boolean> = MutableLiveData(false)
-    fun checkFirstTime(): Boolean {
-        return true
-    }
-    fun writeOnBoarding(){
 
-    }
      fun testBatteryOptimization(){
         val intent = Intent()
         val powerManager = getApplication<Application>().applicationContext.applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
         val packageName = getApplication<Application>().applicationContext.applicationContext.packageName
          isPermissionGiven.value = powerManager.isIgnoringBatteryOptimizations(packageName)
     }
+
+    fun writeOnBoardingFinished(){
+        val sharedPreferences=getApplication<Application>().applicationContext.applicationContext.getSharedPreferences("onBoarding",Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("Finished",true)
+        editor.apply()
+    }
+
+    fun isOnBoardingFinished() : Boolean {
+        val  sharedPreferences = getApplication<Application>().applicationContext.applicationContext.getSharedPreferences("onBoarding",Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean("Finished",false)
+    }
+
 }

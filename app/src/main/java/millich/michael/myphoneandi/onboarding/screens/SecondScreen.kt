@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
@@ -20,6 +21,10 @@ import millich.michael.myphoneandi.onboarding.ViewPagerViewModel
 
 
 class SecondScreen(val viewModel: ViewPagerViewModel) : Fragment() {
+
+    private val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+        viewModel.testBatteryOptimization()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,7 +39,7 @@ class SecondScreen(val viewModel: ViewPagerViewModel) : Fragment() {
             viewModel.screenNumber.value=2
         }
         binding.buttonPermission.setOnClickListener {
-            //openPowerSettings(requireContext())
+            openPowerSettings(requireContext())
         }
         return binding.root
     }
@@ -42,8 +47,9 @@ class SecondScreen(val viewModel: ViewPagerViewModel) : Fragment() {
     private fun openPowerSettings(context: Context){
         val intent = Intent()
         intent.action = Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS
-        context.startActivity(intent)
+        getResult.launch(intent)
     }
+
 
 
 
