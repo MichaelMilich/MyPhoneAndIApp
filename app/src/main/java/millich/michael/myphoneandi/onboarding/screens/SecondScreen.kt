@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
 import androidx.viewpager2.widget.ViewPager2
@@ -19,9 +20,17 @@ import millich.michael.myphoneandi.R
 import millich.michael.myphoneandi.databinding.FragmentSecondScreenBinding
 import millich.michael.myphoneandi.onboarding.ViewPagerViewModel
 
-
+/**
+ * Second screen of the onBoarding.
+ * Here there is the logic for the permission.
+ * There are three buttons - enable, skip and show me how.
+ * enable - takes the user to the settings of the phone to change the setting of the App.
+ * skip - skips this process
+ * show me how - should open the youtube to show how to do this.
+ */
 class SecondScreen(val viewModel: ViewPagerViewModel) : Fragment() {
 
+    // The activityResultLauncher that will wait for the results of the Intent used to open the settings page
     private val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
         viewModel.testBatteryOptimization()
     }
@@ -34,19 +43,29 @@ class SecondScreen(val viewModel: ViewPagerViewModel) : Fragment() {
         val binding : FragmentSecondScreenBinding = DataBindingUtil.inflate(inflater,R.layout.fragment_second_screen, container, false)
         binding.viewModel=viewModel
 
+        //If we skip- go to the last screen
         binding.buttonSkip.setOnClickListener {
-           // viewModel.isPermissionGiven.value =false
             viewModel.screenNumber.value=2
         }
+        // If we go to enable the permissions - we launch the procedure of the intent.
+        // The flow of the code is openPowerSettings -> getResult.OnReturnedResults -> viewModel - make sure we recieved the permission -> if yes, change LiveData.
+        // ViewPagerFragment observer is triggered and sends us to the last screen with the good text
         binding.buttonPermission.setOnClickListener {
-            openPowerSettings(requireContext())
+            openPowerSettings()
+        }
+        //This part i need to implement as well. open an intent to youtube with a specific link
+        binding.buttonExample.setOnClickListener{
+            Snackbar.make(binding.buttonExample,"Need to implement youtube link", Snackbar.LENGTH_SHORT).show()
+            viewModel.openYoutubeVideoExample()
         }
         return binding.root
     }
 
-    private fun openPowerSettings(context: Context){
+    private fun openPowerSettings(){
+        //setting up the intent for the battery optimization
         val intent = Intent()
         intent.action = Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS
+        // launching the intent with a listener
         getResult.launch(intent)
     }
 

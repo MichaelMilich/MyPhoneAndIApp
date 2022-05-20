@@ -12,7 +12,10 @@ import millich.michael.myphoneandi.R
 import millich.michael.myphoneandi.databinding.FragmentFirstScreenBinding
 import millich.michael.myphoneandi.onboarding.ViewPagerViewModel
 
-
+/**
+ * First Screen in OnBoarding.
+ * very short and Self Explanitory, no Comments
+ */
 class FirstScreen(val viewModel: ViewPagerViewModel) : Fragment() {
 
     override fun onCreateView(

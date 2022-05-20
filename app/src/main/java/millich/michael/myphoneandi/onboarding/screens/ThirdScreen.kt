@@ -18,9 +18,15 @@ import millich.michael.myphoneandi.R
 import millich.michael.myphoneandi.databinding.FragmentThirdScreenBinding
 import millich.michael.myphoneandi.onboarding.ViewPagerViewModel
 
+/**
+ * Also, very basic third screen.
+ * On the last screen we just have an ok button that takes us to the homefragment.
+ * The screen is reactive to the desicions of the user in the second screen,
+ * It changes the text according to the desicions.
+ * The change apears in the onResume of the screen. A little bit stupid way to implement this, but it works.
+ */
 class ThirdScreen(val viewModel: ViewPagerViewModel) : Fragment() {
-    private lateinit var textView: TextView
-
+    private lateinit var textView: TextView // save the link to this view for later
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,6 +44,10 @@ class ThirdScreen(val viewModel: ViewPagerViewModel) : Fragment() {
         return binding.root
     }
 
+    /**
+     * It changes the text according to the desicions.
+     * The change apears in the onResume of the screen. A little bit stupid way to implement this, but it works.
+     */
     override fun onResume() {
         if (viewModel.isPermissionGiven.value==true)
         {

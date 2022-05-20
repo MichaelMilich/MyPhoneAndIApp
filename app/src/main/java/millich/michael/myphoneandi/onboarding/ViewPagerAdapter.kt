@@ -10,6 +10,11 @@ import millich.michael.myphoneandi.onboarding.screens.ThirdScreen
 
 private const val NUM_TABS = 3
 
+/**
+ * The adapter for viewPager ( just like in RecycleView)
+ * Is very simple, we have 3 screens. return the relevant screen when it is called
+ * All the screens share the same viewModel pointer - so the adapter that calls the screens should also have the pointer.
+ */
 class ViewPagerAdapter(
     val viewModel : ViewPagerViewModel,
     fm: FragmentManager,
