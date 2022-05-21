@@ -1,13 +1,15 @@
 package millich.michael.myphoneandi.home
 
+import android.content.Context
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import millich.michael.myphoneandi.ClockView
@@ -93,6 +95,8 @@ class HomeFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binder=binding
         clockView=binder.clockView
+
+        setHasOptionsMenu(true)
         return binding.root
     }
     private fun callClockViewTags(eventList: List<UnlockEvent>){
@@ -101,5 +105,27 @@ class HomeFragment : Fragment() {
                 clockView.createTimeTags(eventList,(clockView.binding.analogClockView.width/2).toFloat()+0.5f)
             }
         }
+    }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.options_menu, menu)
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return NavigationUI.
+        onNavDestinationSelected(item,requireView().findNavController())
+                || super.onOptionsItemSelected(item)
+    }
+
+    /**
+     * The ViewPager Fragment is the starting point of the navigation.
+     * But, the second we load it, we need to check if we already did the onBoarding.
+     * If we did, we have to go to the homeFragment.
+     * That is why - as soon as we went through onCreateView and into onViewCreated we check through the viewmodel if we need to pass to the homeFragment.
+     */
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val sharedPreferences = requireContext().applicationContext.getSharedPreferences("onBoarding",Context.MODE_PRIVATE)
+        if (!sharedPreferences.getBoolean("Finished",false))
+            findNavController().navigate(R.id.action_homeFragment_to_viewPagerFragment)
     }
 }

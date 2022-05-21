@@ -123,5 +123,4 @@ class HomeViewModel(val database: UnlockDatabaseDAO, application: Application) :
         context.stopService(_intent)
     }
 
-
 }

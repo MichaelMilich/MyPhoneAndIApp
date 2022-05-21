@@ -18,4 +18,5 @@
     <string name="button_skip_permission_battery_optimization">Skip</string>
     <string name="show_me_how">show me how</string>
     <string name="nav_header_title">navigation text</string>
+    <string name="about">about</string>
 </resources>

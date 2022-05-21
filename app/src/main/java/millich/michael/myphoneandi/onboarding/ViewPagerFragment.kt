@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -90,6 +91,18 @@ class ViewPagerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         if (viewModel.isOnBoardingFinished())
             findNavController().navigate(R.id.action_viewPagerFragment_to_homeFragment)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar!!.hide()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar!!.show()
     }
 
 }
