@@ -10,12 +10,12 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="millich.michael.myphoneandi.home.HomeFragment"
-        android:label="HomeFragment"
+        android:label="Home"
         tools:layout="@layout/fragment_home"/>
     <fragment
         android:id="@+id/viewPagerFragment"
         android:name="millich.michael.myphoneandi.onboarding.ViewPagerFragment"
-        android:label="ViewPagerFragment"
+        android:label="Welcome"
         tools:layout="@layout/fragment_view_pager">
         <action
             android:id="@+id/action_viewPagerFragment_to_homeFragment"
@@ -23,4 +23,19 @@
             app:popUpTo="@id/viewPagerFragment"
             app:popUpToInclusive="true" />
     </fragment>
+    <fragment
+        android:id="@+id/healthFragment"
+        android:name="millich.michael.myphoneandi.health.HealthFragment"
+        android:label="fragment_health"
+        tools:layout="@layout/fragment_health" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="millich.michael.myphoneandi.profile.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="millich.michael.myphoneandi.settings.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>

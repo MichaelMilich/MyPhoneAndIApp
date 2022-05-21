@@ -55,7 +55,6 @@ class SecondScreen(val viewModel: ViewPagerViewModel) : Fragment() {
         }
         //This part i need to implement as well. open an intent to youtube with a specific link
         binding.buttonExample.setOnClickListener{
-            Snackbar.make(binding.buttonExample,"Need to implement youtube link", Snackbar.LENGTH_SHORT).show()
             viewModel.openYoutubeVideoExample()
         }
         return binding.root
