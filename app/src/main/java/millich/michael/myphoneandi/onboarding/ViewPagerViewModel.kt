@@ -11,6 +11,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.preference.PreferenceManager
 
 private const val YOUTUBE_URL = "https://www.youtube.com/watch?v=kZMLz1Fctog"
 /**
@@ -41,7 +42,7 @@ class ViewPagerViewModel(application: Application) : AndroidViewModel(applicatio
      * Write the OnBoarding status to the shared preference of the application
      */
     fun writeOnBoardingFinished(){
-        val sharedPreferences=getApplication<Application>().applicationContext.applicationContext.getSharedPreferences("onBoarding",Context.MODE_PRIVATE)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication<Application>().applicationContext)
         val editor = sharedPreferences.edit()
         editor.putBoolean("Finished",true)
         editor.apply()
@@ -51,7 +52,7 @@ class ViewPagerViewModel(application: Application) : AndroidViewModel(applicatio
      * Read The OnBoarding status from the shared preference of the application
      */
     fun isOnBoardingFinished() : Boolean {
-        val  sharedPreferences = getApplication<Application>().applicationContext.applicationContext.getSharedPreferences("onBoarding",Context.MODE_PRIVATE)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication<Application>().applicationContext)
         return sharedPreferences.getBoolean("Finished",false)
     }
 

@@ -1,7 +1,9 @@
 package millich.michael.myphoneandi.home
 
+import android.app.Application
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
@@ -10,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
+import androidx.preference.PreferenceManager
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import millich.michael.myphoneandi.ClockView
@@ -124,8 +127,11 @@ class HomeFragment : Fragment() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val sharedPreferences = requireContext().applicationContext.getSharedPreferences("onBoarding",Context.MODE_PRIVATE)
-        if (!sharedPreferences.getBoolean("Finished",false))
+        Log.i("TAG","OnViewCreated")
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext().applicationContext)
+        val value = sharedPreferences.getBoolean("Finished",false)
+        Log.i("TAG","value = $value")
+        if (!value)
             findNavController().navigate(R.id.action_homeFragment_to_viewPagerFragment)
     }
 }
