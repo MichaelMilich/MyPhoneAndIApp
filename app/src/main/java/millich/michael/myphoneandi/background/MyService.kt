@@ -1,16 +1,14 @@
 package millich.michael.myphoneandi.background
 
 
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
-import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Binder
 import android.os.IBinder
-import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.preference.PreferenceManager
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import millich.michael.myphoneandi.*
@@ -21,13 +19,12 @@ import millich.michael.myphoneandi.database.UnlockDatabaseDAO
  * The service that runs with the application.
  * Does not run on it's own process but uses corutines for any action
  */
-class MyService: Service() {
+class MyService: Service()  {
     // creating the interface for the connection between the servie and viewmodel.
     inner class LocalBinder : Binder() {
         fun getService() : MyService =this@MyService
     }
     private val binder = LocalBinder()
-
     lateinit var database: UnlockDatabaseDAO
     var isServiceRunning =false // if the service is already running, don't create another broadcast receiver and don't show new notifications
     override fun onBind(intent: Intent): IBinder {
@@ -56,17 +53,20 @@ class MyService: Service() {
             stopSelf()
             return super.onStartCommand(intent, flags, startId)
         }
-
         if(isServiceRunning) {
             return Service.START_STICKY
         }
-
         runBlocking { launch {
             val unlockCount =database.getTodayUnlocksCountAfterTimeNoLiveData(getCurrentDateInMilli())
             showNotificationAndStartForeground(" $unlockCount  unlocks today" , "")
         } }
         registerReceiver(UnlockBroadcastReceiver, IntentFilter(Intent.ACTION_USER_PRESENT))
         isServiceRunning=true
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(resources.getString(R.string.background_service_run),true)
+        editor.apply()
+
         return Service.START_STICKY
     }
 

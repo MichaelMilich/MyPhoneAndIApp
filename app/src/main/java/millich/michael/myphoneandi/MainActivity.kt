@@ -69,4 +69,5 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
         return NavigationUI.navigateUp(navController, drawerLayout)
     }
+
 }

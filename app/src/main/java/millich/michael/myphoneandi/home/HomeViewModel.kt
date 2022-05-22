@@ -22,8 +22,6 @@ import java.util.*
  * It is also responsible for providing the livedata from the database for the databinding.
  */
 class HomeViewModel(val database: UnlockDatabaseDAO, application: Application) : AndroidViewModel(application) {
-    @SuppressLint("StaticFieldLeak")
-    private val context = getApplication<Application>().applicationContext //used for starting an stopping the service.
     init {
         viewModelScope.launch { // check if the database is empty, if it is insert at least one unlock.
             //Currently i am using a pre-populated table so this code doesn't get used.
@@ -34,10 +32,6 @@ class HomeViewModel(val database: UnlockDatabaseDAO, application: Application) :
             }
         }
     }
-    //The required code for making the buttons for starting or stoping the service.
-    private val _buttonsVisible= MutableLiveData<Boolean>()
-    val buttonVisible : LiveData<Boolean>
-        get() = _buttonsVisible
 
     // much needed unlock count for the UI
     private val _unlockCount =  database.getTodayUnlocksCountAfterTime(getCurrentDateInMilli())
@@ -78,49 +72,17 @@ class HomeViewModel(val database: UnlockDatabaseDAO, application: Application) :
             return  _unlockEvents24H
         }
 
-    /** Defines callbacks for service binding, passed to bindService()  */
-    private val connection = object : ServiceConnection {
-
-        override fun onServiceConnected(className: ComponentName, service: IBinder) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            val binder = service as MyService.LocalBinder
-            _buttonsVisible.value=true
-        }
-
-        override fun onServiceDisconnected(arg0: ComponentName) {
-            _buttonsVisible.value =false
-        }
-    }
 
     /**
      * On starting the ViewModel - start the service.
      */
     init {
-        _buttonsVisible.value=false
-        start()
-    }
-
-    /**
-     * When starting the Service, also bind to it.
-     * The Service is foreground, but we can easily change that with calling context.startService(_intent)
-     */
-    fun start(){
-        _buttonsVisible.value=true
-        val _intent = Intent(context, MyService::class.java)
+        val _intent = Intent(getApplication<Application>().applicationContext, MyService::class.java)
         _intent.action = START_MY_SERVICE
-        context.startForegroundService(_intent)
-        Intent(context,MyService::class.java).also { intent -> context.bindService(intent,connection,0) }
+        getApplication<Application>().applicationContext.startForegroundService(_intent)
     }
 
-    /**
-     * When stopping the service, also unbind from it
-     */
-    fun stop(){
-        context.unbindService(connection)
-        _buttonsVisible.value =false
-        val _intent = Intent(context, MyService::class.java)
-        _intent.action = STOP_MY_SERVICE
-        context.stopService(_intent)
-    }
+
+
 
 }

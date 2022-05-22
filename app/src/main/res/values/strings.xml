@@ -19,4 +19,38 @@
     <string name="show_me_how">show me how</string>
     <string name="nav_header_title">navigation text</string>
     <string name="about">about</string>
+    <string name="wow_such_empty">WOW SUCH EMPTY</string>
+    <string name="health_page_about">This is the health page. \n The health page is a way to physically feel the usage on the phone, it is an option for you. \n If you want - you will be able can choose to feel every 5 unlocks or every 5 minutes on the phone as one push up.</string>
+    <string name="profile_page_about">This will be the profile page. \n Here you will be able to see insights on your phone usage and your statistics</string>
+    <string name="about_application">
+        Thank you for using my application. \n
+        My name is Michael Millich, I am an aspiring programmer at night, mechanical engineer by day. \n
+        I am making this application as a project for me to learn to program. \n
+        The goal of this application is to be an open source code version of the wellnessbeing app by google. \n
+        If you have any questions , feel free to write to my email michael.milich1@gmail.com \n
+        \n
+        P.S. I know that the picture is Doge, i will place my own picture once i find a cool one :)
+    </string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="background_service_run">background_service_run</string>
+    <string name="background_service_off_summary">The app will not collect new data</string>
+    <string name="background_service_on_summary">The service is running</string>
+    <string name="background_service_run_title">enable background service to run</string>
+    <string name="background_service_run_battery_optimization">background_service_run_battery_optimization</string>
+    <string name="background_service_run_battery_optimization_off_summary">The app might stop working from time to time due to android battery optimization</string>
+    <string name="background_service_run_battery_optimization_on_summary">The service is running and is excluded from battery optimization</string>
+    <string name="background_service_run_battery_optimization_title">Let the service run indefinitely</string>
 </resources>

@@ -46,15 +46,6 @@ class HomeFragment : Fragment() {
         val viewModelFactory = HomeViewModelFactory(application,databaseDAO)
         viewModel = ViewModelProvider(this,viewModelFactory).get(HomeViewModel::class.java)
         binding.viewModel=viewModel
-        // the required code to start/stop the service.
-        binding.buttonStartService.setOnClickListener{
-            this.context?.let { it1 -> Snackbar.make(it1,it,"Made start", Snackbar.LENGTH_SHORT).show() }
-            viewModel.start()
-        }
-        binding.buttonStopService.setOnClickListener{
-            this.context?.let { it1 -> Snackbar.make(it1,it,"Made stop", Snackbar.LENGTH_SHORT).show() }
-            viewModel.stop()
-        }
 
         // seting up the adapter for te recycleView
         val adapter = UnlockEventAdapter()
@@ -106,10 +97,19 @@ class HomeFragment : Fragment() {
             }
         }
     }
+
+    /**
+     * The Home Fragment is the main fragment in the navigation.
+     * As such it has to create and inflate the menu and options.
+     */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.options_menu, menu)
     }
+    /**
+     * The Home Fragment is the main fragment in the navigation.
+     * As such it has to manage teh navigation - at least to pass it to the navigation controller
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return NavigationUI.
         onNavDestinationSelected(item,requireView().findNavController())
@@ -117,10 +117,10 @@ class HomeFragment : Fragment() {
     }
 
     /**
-     * The ViewPager Fragment is the starting point of the navigation.
+     * The Home Fragment is the starting point of the navigation.
      * But, the second we load it, we need to check if we already did the onBoarding.
-     * If we did, we have to go to the homeFragment.
-     * That is why - as soon as we went through onCreateView and into onViewCreated we check through the viewmodel if we need to pass to the homeFragment.
+     * If we didn't, we have to go to the viewPagerFragment.
+     * That is why - as soon as we went through onCreateView and into onViewCreated we check through the viewmodel if we need to pass to the viewPagerFragment.
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

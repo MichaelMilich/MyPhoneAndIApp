@@ -32,21 +32,21 @@
     <fragment
         android:id="@+id/healthFragment"
         android:name="millich.michael.myphoneandi.health.HealthFragment"
-        android:label="fragment_health"
+        android:label="Health"
         tools:layout="@layout/fragment_health" />
     <fragment
         android:id="@+id/profileFragment"
         android:name="millich.michael.myphoneandi.profile.ProfileFragment"
-        android:label="fragment_profile"
+        android:label="Profile"
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/settingsFragment"
         android:name="millich.michael.myphoneandi.settings.SettingsFragment"
-        android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" />
+        android:label="Settings"
+        tools:layout="" />
     <fragment
         android:id="@+id/aboutFragment"
         android:name="millich.michael.myphoneandi.about.AboutFragment"
-        android:label="fragment_about"
+        android:label="About"
         tools:layout="@layout/fragment_about" />
 </navigation>

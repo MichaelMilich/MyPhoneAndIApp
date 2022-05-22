@@ -1,0 +1,20 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="Background Service">
+
+        <SwitchPreferenceCompat
+            app:key="@string/background_service_run"
+            app:summaryOff="@string/background_service_off_summary"
+            app:summaryOn="@string/background_service_on_summary"
+            app:title="@string/background_service_run_title" />
+
+        <SwitchPreferenceCompat
+            app:dependency="@string/background_service_run"
+            app:key="@string/background_service_run_battery_optimization"
+            app:summaryOff="@string/background_service_run_battery_optimization_off_summary"
+            app:summaryOn="@string/background_service_run_battery_optimization_on_summary"
+            app:title="@string/background_service_run_battery_optimization_title" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
