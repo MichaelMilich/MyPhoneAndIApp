@@ -28,10 +28,10 @@ class ViewPagerAdapter(
 
     override fun createFragment(position: Int): Fragment {
         when (position) {
-            1 -> return SecondScreen(viewModel)
-            2 -> return ThirdScreen(viewModel)
+            1 -> return SecondScreen()
+            2 -> return ThirdScreen()
         }
-        return FirstScreen(viewModel) // if the position is 0
+        return FirstScreen() // if the position is 0
     }
 
 }

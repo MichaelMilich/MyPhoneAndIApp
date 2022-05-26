@@ -37,9 +37,14 @@
             app:layout_constraintEnd_toEndOf="@+id/clock_view"
             app:layout_constraintStart_toStartOf="@+id/clock_view"
             app:layout_constraintTop_toBottomOf="@+id/clock_view"
-            app:layout_constraintBottom_toBottomOf="@+id/constraint_layout"
+            app:layout_constraintBottom_toTopOf="@+id/bottom"
             />
-
+        <include layout="@layout/bar_bottom_home_fragment"
+            android:id="@+id/bottom"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_margin="10dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

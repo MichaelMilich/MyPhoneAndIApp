@@ -8,10 +8,12 @@
             name="viewModel"
             type="millich.michael.myphoneandi.onboarding.ViewPagerViewModel" />
     </data>
-
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:context=".onboarding.screens.FirstScreen">
 
 
@@ -64,4 +66,5 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </layout>

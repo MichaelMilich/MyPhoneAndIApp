@@ -10,12 +10,14 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/MyPhoneAndI/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.196" />
         <entry key="..\:/Users/User/AndroidStudioProjects/MyPhoneAndI/app/src/main/res/drawable/ic_my_phone_and_i_foreground.xml" value="0.196" />
         <entry key="..\:/Users/User/AndroidStudioProjects/MyPhoneAndI/app/src/main/res/drawable/ic_my_phone_and_i_notification_option2.xml" value="0.3675" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/MyPhoneAndI/app/src/main/res/drawable/ic_profile.xml" value="0.161" />
         <entry key="..\:/Users/User/AndroidStudioProjects/MyPhoneAndI/app/src/main/res/drawable/selected_dot.xml" value="0.2595" />
         <entry key="..\:/Users/User/AndroidStudioProjects/MyPhoneAndI/app/src/main/res/drawable/tab_selector.xml" value="0.2095" />
         <entry key="..\:/Users/User/AndroidStudioProjects/MyPhoneAndI/app/src/main/res/layout-land/activity_main.xml" value="0.25" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/MyPhoneAndI/app/src/main/res/layout-land/fragment_home.xml" value="0.31040564373897706" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/MyPhoneAndI/app/src/main/res/layout-land/fragment_home.xml" value="0.25" />
         <entry key="..\:/Users/User/AndroidStudioProjects/MyPhoneAndI/app/src/main/res/layout/activity_main.xml" value="0.358695652173913" />
         <entry key="..\:/Users/User/AndroidStudioProjects/MyPhoneAndI/app/src/main/res/layout/app_bar_main.xml" value="0.28177083333333336" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/MyPhoneAndI/app/src/main/res/layout/bar_bottom_home_fragment.xml" value="0.33" />
         <entry key="..\:/Users/User/AndroidStudioProjects/MyPhoneAndI/app/src/main/res/layout/clock_view.xml" value="0.19519927536231885" />
         <entry key="..\:/Users/User/AndroidStudioProjects/MyPhoneAndI/app/src/main/res/layout/cock_view.xml" value="0.18802083333333333" />
         <entry key="..\:/Users/User/AndroidStudioProjects/MyPhoneAndI/app/src/main/res/layout/fragment_about.xml" value="0.33" />

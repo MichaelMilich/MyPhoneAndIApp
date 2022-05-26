@@ -37,3 +37,7 @@ fun TextView.setOnBoardingText(item : Boolean){
         resources.getText(R.string.on_boarding_done_text_permission_denied)
 
 }
+@BindingAdapter("showDate")
+fun TextView.setDateText(item: UnlockEvent){
+    text = formatSimpleDate()
+}

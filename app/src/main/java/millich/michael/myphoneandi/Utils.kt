@@ -40,6 +40,19 @@ fun formatDateFromMillisecondsLong( long: Long) :String
     val date = Date(long)
     return simpleDateFormat.format(date)
 }
+fun formatSimpleDate() :String
+{
+    val calendar = Calendar.getInstance()
+    val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
+    simpleDateFormat.timeZone = TimeZone.getDefault()
+    return simpleDateFormat.format(calendar.time)
+}
+fun formatTimeWords() :String {
+    if (getCurrentDateInMilli() > getToday12AmInMilli())
+        return " 0 - 12 (AM)"
+    else
+        return "12 - 24 (PM)"
+}
 fun getCurrentDateInMilli() : Long{
     val today = Calendar.getInstance()
     today.set(Calendar.MILLISECOND,0)

@@ -24,7 +24,7 @@ private const val YOUTUBE_URL = "https://www.youtube.com/watch?v=kZMLz1Fctog"
  * 3) write and read if the user already passed the OnBoarding each time the application starts.
  */
 class ViewPagerViewModel(application: Application) : AndroidViewModel(application) {
-    var screenNumber : MutableLiveData<Int> = MutableLiveData()
+    var screenNumber : MutableLiveData<Int> = MutableLiveData(0)
     var isPermissionGiven : MutableLiveData<Boolean> = MutableLiveData(false)
 
     /**
@@ -32,7 +32,6 @@ class ViewPagerViewModel(application: Application) : AndroidViewModel(applicatio
      * Battery optimization required permissions from the power manger and not the regular permissions API
      */
      fun testBatteryOptimization(){
-        val intent = Intent()
         val powerManager = getApplication<Application>().applicationContext.applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
         val packageName = getApplication<Application>().applicationContext.applicationContext.packageName
          isPermissionGiven.value = powerManager.isIgnoringBatteryOptimizations(packageName)

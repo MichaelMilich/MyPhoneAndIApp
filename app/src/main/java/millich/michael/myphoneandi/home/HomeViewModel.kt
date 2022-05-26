@@ -47,6 +47,8 @@ class HomeViewModel(val database: UnlockDatabaseDAO, application: Application) :
             return _lastUnlock
         }
     val lastUnlockTime : LiveData<String> = Transformations.map( _lastUnlock , { user -> formatDateFromMillisecondsLong(user.eventTime)})
+    val dateText : MutableLiveData<String> = MutableLiveData<String>(formatSimpleDate())
+    val dateTextWords : MutableLiveData<String> = MutableLiveData<String>(formatTimeWords())
 
     //Simple check - are we before or after 12 AM today.
     private val _isAfter12Am : MutableLiveData<Boolean> = MutableLiveData<Boolean>().also { it.value=

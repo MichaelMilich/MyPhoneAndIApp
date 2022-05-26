@@ -14,6 +14,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.snackbar.Snackbar
 import millich.michael.myphoneandi.R
@@ -28,7 +29,8 @@ import millich.michael.myphoneandi.onboarding.ViewPagerViewModel
  * skip - skips this process
  * show me how - should open the youtube to show how to do this.
  */
-class SecondScreen(val viewModel: ViewPagerViewModel) : Fragment() {
+class SecondScreen() : Fragment() {
+    private val viewModel : ViewPagerViewModel by activityViewModels()
 
     // The activityResultLauncher that will wait for the results of the Intent used to open the settings page
     private val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){

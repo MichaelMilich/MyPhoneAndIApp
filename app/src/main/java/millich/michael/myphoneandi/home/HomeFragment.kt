@@ -49,6 +49,7 @@ class HomeFragment : Fragment() {
         val viewModelFactory = HomeViewModelFactory(application,databaseDAO)
         viewModel = ViewModelProvider(this,viewModelFactory).get(HomeViewModel::class.java)
         binding.viewModel=viewModel
+        binding.bottom!!.viewModel=viewModel
 
         // seting up the adapter for te recycleView
         val adapter = UnlockEventAdapter()

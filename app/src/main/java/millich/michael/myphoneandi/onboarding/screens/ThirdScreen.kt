@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.findNavController
@@ -25,8 +26,9 @@ import millich.michael.myphoneandi.onboarding.ViewPagerViewModel
  * It changes the text according to the desicions.
  * The change apears in the onResume of the screen. A little bit stupid way to implement this, but it works.
  */
-class ThirdScreen(val viewModel: ViewPagerViewModel) : Fragment() {
+class ThirdScreen() : Fragment() {
     private lateinit var textView: TextView // save the link to this view for later
+    private val viewModel : ViewPagerViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

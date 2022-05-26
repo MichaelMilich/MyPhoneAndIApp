@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_DRAGGING
@@ -34,7 +35,7 @@ class ViewPagerFragment : Fragment() {
         fun newInstance() = ViewPagerFragment()
     }
 
-    private lateinit var  viewModel: ViewPagerViewModel
+    private val viewModel : ViewPagerViewModel by activityViewModels()
 
     /**
      * Create the view, the viewModel , the viewPageAdapter, Add observers on the viewModel liveData
@@ -49,19 +50,16 @@ class ViewPagerFragment : Fragment() {
                 R.layout.fragment_view_pager,
                 container,
                 false)
-        //Create the VieModel through the Factory
-        val factory = ViewPagerViewModelFactory(requireActivity().application)
-        viewModel = ViewModelProvider(this, factory).get(ViewPagerViewModel::class.java)
+
         binding.viewModel = viewModel
 
         //Create the Adapter
         val adapter = ViewPagerAdapter(viewModel,
-            requireActivity().supportFragmentManager,
+            childFragmentManager,
             lifecycle
         )
         binding.viewPager.adapter=adapter
         binding.viewPager.isUserInputEnabled =false
-        viewModel.screenNumber.value=0
 
         //The navigation is done through the LiveData and observer.
         // When we click on Next ( in the 1st and 2nd screens) we change the viewModel's screen number Livedata
