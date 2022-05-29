@@ -48,10 +48,12 @@ fun formatSimpleDate() :String
     return simpleDateFormat.format(calendar.time)
 }
 fun formatTimeWords() :String {
-    if (getCurrentDateInMilli() > getToday12AmInMilli())
-        return " 0 - 12 (AM)"
-    else
+    val now =Calendar.getInstance().timeInMillis
+    val afternoon= getToday12AmInMilli()
+    if (now > afternoon)
         return "12 - 24 (PM)"
+    else
+        return " 0 - 12 (AM)"
 }
 fun getCurrentDateInMilli() : Long{
     val today = Calendar.getInstance()
