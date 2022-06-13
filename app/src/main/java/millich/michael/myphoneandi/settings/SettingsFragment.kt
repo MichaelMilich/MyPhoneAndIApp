@@ -49,6 +49,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
         val factory = SettingsViewModel.Factory(requireActivity().application)
         viewModel = ViewModelProvider(this,factory).get(SettingsViewModel::class.java)
+
+        // check if permission is given for the battery optimization and set it in the start of the fragment
+        val batteryPref  = findPreference<SwitchPreferenceCompat>(resources.getString(R.string.background_service_run_battery_optimization))
+        val actualValue = viewModel.isPermissionGiven.value!!
+        batteryPref!!.isChecked =actualValue
     }
 
     /**
