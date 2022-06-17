@@ -50,16 +50,11 @@ class HomeViewModel(val database: UnlockDatabaseDAO, application: Application) :
     val dateText : MutableLiveData<String> = MutableLiveData<String>(formatSimpleDate())
     val dateTextWords : MutableLiveData<String> = MutableLiveData<String>(formatTimeWords())
 
-    //Simple check - are we before or after 12 AM today.
-    private val _isAfter12Am : MutableLiveData<Boolean> = MutableLiveData<Boolean>().also { it.value=
-        Calendar.getInstance().timeInMillis>getToday12AmInMilli() }
-    val isAfter12Am : MutableLiveData<Boolean>
-        get() {
-            return _isAfter12Am
-        }
+
+
 
     //The unlockevent list to be provided to the clockView - changes if we are after 12 AM
-    private val _unlockEvents12H=if(isAfter12Am.value!!){ database.getAllUnlcoksFromTime(getToday12AmInMilli()) }
+    private val _unlockEvents12H=if(isAfter12Am()){ database.getAllUnlcoksFromTime(getToday12AmInMilli()) }
     else{ database.getAllUnlcoksFromTime(getCurrentDateInMilli()) }
 
     val unlockEvents12H : LiveData<List<UnlockEvent>>
@@ -84,6 +79,7 @@ class HomeViewModel(val database: UnlockDatabaseDAO, application: Application) :
         getApplication<Application>().applicationContext.startForegroundService(_intent)
     }
 
+    fun isAfter12Am() :Boolean { return Calendar.getInstance().timeInMillis>getToday12AmInMilli()}
 
 
 

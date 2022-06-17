@@ -53,4 +53,5 @@
     <string name="background_service_run_battery_optimization_off_summary">The app might stop working from time to time due to android battery optimization</string>
     <string name="background_service_run_battery_optimization_on_summary">The service is running and is excluded from battery optimization</string>
     <string name="background_service_run_battery_optimization_title">Let the service run indefinitely</string>
+    <string name="refresh">refresh</string>
 </resources>

@@ -8,12 +8,15 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.google.android.material.snackbar.Snackbar
 import millich.michael.myphoneandi.background.MyService
 import millich.michael.myphoneandi.databinding.ActivityMainBinding
 
@@ -68,6 +71,18 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
         return NavigationUI.navigateUp(navController, drawerLayout)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.title){
+            resources.getString(R.string.refresh) -> {
+                Snackbar.make(drawerLayout, "Clickity clack", Snackbar.LENGTH_SHORT).show()
+                val fragment= supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+                refreshFragment(fragment?.context)
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
 }

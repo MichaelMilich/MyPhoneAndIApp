@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import com.google.android.material.snackbar.Snackbar
 import millich.michael.myphoneandi.database.UnlockEvent
 import millich.michael.myphoneandi.databinding.ClockViewBinding
 import millich.michael.myphoneandi.home.HomeViewModel
@@ -68,18 +69,20 @@ class ClockView : RelativeLayout {
      */
     fun onBind() {
         viewModel = binding.viewModelClock!!
-        if (viewModel.isAfter12Am.value!!)
+        if (viewModel.isAfter12Am())
             binding.analogClockView.setImageResource(R.drawable.ic_analog_clock_12_24)
-        viewModel.isAfter12Am.observe(binding.lifecycleOwner!!,androidx.lifecycle.Observer{
-            checkClock()
-        })
+//        viewModel.isAfter12Am.observe(binding.lifecycleOwner!!,androidx.lifecycle.Observer{
+//            checkClock()
+//        })
     }
 
     /**
      * update the analog clock to 0-12H or 12-24H image.
      */
     fun checkClock(){
-        if (viewModel.isAfter12Am.value!!)
+        Log.i("Test","Are we now between 12 and 24  = ${viewModel.isAfter12Am()}")
+        Snackbar.make(this,"Are we now between 12 and 24  = ${viewModel.isAfter12Am()}",Snackbar.LENGTH_SHORT).show()
+        if (viewModel.isAfter12Am())
             binding.analogClockView.setImageResource(R.drawable.ic_analog_clock_12_24)
         else
             binding.analogClockView.setImageResource(R.drawable.ic_analog_clock_0_12)
@@ -132,4 +135,5 @@ class ClockView : RelativeLayout {
             }
         }
     }
+
 }

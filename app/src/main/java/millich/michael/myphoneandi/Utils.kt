@@ -13,8 +13,10 @@
 // limitations under the License.
 package millich.michael.myphoneandi
 
+import android.content.Context
 import android.view.View
 import android.view.ViewTreeObserver
+import androidx.appcompat.app.AppCompatActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -114,4 +116,19 @@ inline fun View.afterMeasured(crossinline f: View.() -> Unit) {
             }
         }
     })
+}
+
+fun refreshFragment(context: Context? ){
+    context?.let {
+        val fragmentManager = (context as? AppCompatActivity)?.supportFragmentManager
+        fragmentManager?.let {
+            val currentFragment = fragmentManager.findFragmentById(R.id.nav_host_fragment)
+            currentFragment?.let {
+                val fragmentTransaction = fragmentManager.beginTransaction()
+                fragmentTransaction.detach(it)
+                fragmentTransaction.attach(it)
+                fragmentTransaction.commit()
+            }
+        }
+    }
 }

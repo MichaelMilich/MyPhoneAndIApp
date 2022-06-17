@@ -42,6 +42,7 @@ class HomeFragment : Fragment() {
             container,
             false
         )
+        Log.i("Test","On create")
         // all the basic requirements.
         val application = requireNotNull(this.activity).application
         val databaseDAO = UnlockDatabase.getInstance(application).unlockDatabaseDAO
@@ -135,4 +136,21 @@ class HomeFragment : Fragment() {
         if (!value)
             findNavController().navigate(R.id.action_homeFragment_to_viewPagerFragment)
     }
+
+    override fun onStart() {
+        Log.i("Test","On Start")
+        viewLifecycleOwner.lifecycleScope.launch {
+            clockView.afterMeasured {
+                clockView.checkClock()
+            }
+        }
+        super.onStart()
+    }
+
+    override fun onResume() {
+        Log.i("Test","On Resume")
+        super.onResume()
+    }
+
+
 }
