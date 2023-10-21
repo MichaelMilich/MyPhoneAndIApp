@@ -118,7 +118,7 @@ inline fun View.afterMeasured(crossinline f: View.() -> Unit) {
     })
 }
 
-fun refreshFragment(context: Context? ){
+/*fun refreshFragment(context: Context? ){
     context?.let {
         val fragmentManager = (context as? AppCompatActivity)?.supportFragmentManager
         fragmentManager?.let {
@@ -131,4 +131,4 @@ fun refreshFragment(context: Context? ){
             }
         }
     }
-}
+}*/

@@ -78,7 +78,14 @@ class MainActivity : AppCompatActivity() {
             resources.getString(R.string.refresh) -> {
                 Snackbar.make(drawerLayout, "Clickity clack", Snackbar.LENGTH_SHORT).show()
                 val fragment= supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
-                refreshFragment(fragment?.context)
+                val msg = fragment.toString() ?: "null "
+                Log.i("Test","fragment is $msg")
+                fragment?.let {
+                    val transaction = supportFragmentManager.beginTransaction()
+                    transaction.detach(it)
+                    transaction.attach(it)
+                    transaction.commit()
+                }
             }
         }
 

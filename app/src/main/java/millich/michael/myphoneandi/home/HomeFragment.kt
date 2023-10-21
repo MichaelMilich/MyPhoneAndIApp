@@ -42,7 +42,6 @@ class HomeFragment : Fragment() {
             container,
             false
         )
-        Log.i("Test","On create")
         // all the basic requirements.
         val application = requireNotNull(this.activity).application
         val databaseDAO = UnlockDatabase.getInstance(application).unlockDatabaseDAO
@@ -50,7 +49,7 @@ class HomeFragment : Fragment() {
         val viewModelFactory = HomeViewModelFactory(application,databaseDAO)
         viewModel = ViewModelProvider(this,viewModelFactory).get(HomeViewModel::class.java)
         binding.viewModel=viewModel
-        binding.bottom!!.viewModel=viewModel
+        binding.bottom.viewModel=viewModel
 
         // seting up the adapter for te recycleView
         val adapter = UnlockEventAdapter()
@@ -60,21 +59,7 @@ class HomeFragment : Fragment() {
         //Observing changes in the 12H list for the ClockView
         viewModel.unlockEvents12H.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             it?.let {
-                if(it.isNotEmpty()) {
-                    //The id should start from 1, that is why we change the eventid for the given list.
-                        //The given list is always read from the database so we dont get id of -1
-                    val firstId = it[it.size - 1].eventId - 1
-                    for (event in it)
-                        event.eventId -= firstId
-                    //Giving the list to the clockView.
                     callClockViewTags(it)
-                }
-            }
-        })
-
-        //Observing changes in the 24H list for the recycleView.
-        viewModel.unlockEvents24H.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            it?.let {
                 if(it.isNotEmpty()) {
                     //The id should start from 1, that is why we change the eventid for the given list.
                     //The given list is always read from the database so we dont get id of -1
@@ -87,6 +72,7 @@ class HomeFragment : Fragment() {
             }
         })
 
+
         binding.clockView.binding.lifecycleOwner=viewLifecycleOwner
         binding.lifecycleOwner = viewLifecycleOwner
         binder=binding
@@ -96,11 +82,15 @@ class HomeFragment : Fragment() {
         return binding.root
     }
     private fun callClockViewTags(eventList: List<UnlockEvent>){
-        viewLifecycleOwner.lifecycleScope.launch {
-            clockView.afterMeasured {
-                clockView.createTimeTags(eventList,(clockView.binding.analogClockView.width/2).toFloat()+0.5f)
+        if(eventList.isNotEmpty()){
+            //Giving the list to the clockView.
+            viewLifecycleOwner.lifecycleScope.launch {
+                clockView.afterMeasured {
+                    clockView.createTimeTags(eventList,(clockView.binding.analogClockView.width/2).toFloat()+0.5f)
+                }
             }
         }
+
     }
 
     /**
@@ -129,7 +119,6 @@ class HomeFragment : Fragment() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.i("TAG","OnViewCreated")
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext().applicationContext)
         val value = sharedPreferences.getBoolean("Finished",false)
         Log.i("TAG","value = $value")
@@ -142,15 +131,17 @@ class HomeFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             clockView.afterMeasured {
                 clockView.checkClock()
+                binder.viewModel?.let {
+                    if(it.shouldRefresh()){
+                        Log.i("Test","Refresh")
+                        it.refresh()
+                    }
+                }
             }
         }
         super.onStart()
     }
 
-    override fun onResume() {
-        Log.i("Test","On Resume")
-        super.onResume()
-    }
 
 
 }

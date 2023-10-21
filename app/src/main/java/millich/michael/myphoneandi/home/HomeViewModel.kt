@@ -22,7 +22,7 @@ import java.util.*
  * It is also responsible for providing the livedata from the database for the databinding.
  */
 class HomeViewModel(val database: UnlockDatabaseDAO, application: Application) : AndroidViewModel(application) {
-    init {
+    /*init {
         viewModelScope.launch { // check if the database is empty, if it is insert at least one unlock.
             //Currently i am using a pre-populated table so this code doesn't get used.
             if (database.getTableCount()==0)
@@ -31,10 +31,10 @@ class HomeViewModel(val database: UnlockDatabaseDAO, application: Application) :
                 database.Insert(UnlockEvent())
             }
         }
-    }
+    }*/
 
     // much needed unlock count for the UI
-    private val _unlockCount =  database.getTodayUnlocksCountAfterTime(getCurrentDateInMilli())
+    private var _unlockCount =  database.getTodayUnlocksCountAfterTime(getCurrentDateInMilli())
     val unlockCount : LiveData<Int>
         get() {
             return  _unlockCount
@@ -42,33 +42,17 @@ class HomeViewModel(val database: UnlockDatabaseDAO, application: Application) :
     // Keeping the last unlock in the memory of the application. might be useful.
     // I also show when we had the last unlock in lastunlockTime.
     private val _lastUnlock = database.getLastUnlockLiveData()
-    val lastUnlock : LiveData<UnlockEvent>
-        get() {
-            return _lastUnlock
-        }
     val lastUnlockTime : LiveData<String> = Transformations.map( _lastUnlock , { user -> formatDateFromMillisecondsLong(user.eventTime)})
     val dateText : MutableLiveData<String> = MutableLiveData<String>(formatSimpleDate())
     val dateTextWords : MutableLiveData<String> = MutableLiveData<String>(formatTimeWords())
 
-
-
-
     //The unlockevent list to be provided to the clockView - changes if we are after 12 AM
-    private val _unlockEvents12H=if(isAfter12Am()){ database.getAllUnlcoksFromTime(getToday12AmInMilli()) }
-    else{ database.getAllUnlcoksFromTime(getCurrentDateInMilli()) }
+    private var _unlockEvents12H= _unlockEvents12HRefresh()
 
     val unlockEvents12H : LiveData<List<UnlockEvent>>
         get() {
             return  _unlockEvents12H
         }
-
-    // The unlock list to be provided to the recycleView
-    private val _unlockEvents24H = database.getAllUnlcoksFromTime(getCurrentDateInMilli())
-    val unlockEvents24H : LiveData<List<UnlockEvent>>
-        get() {
-            return  _unlockEvents24H
-        }
-
 
     /**
      * On starting the ViewModel - start the service.
@@ -80,7 +64,34 @@ class HomeViewModel(val database: UnlockDatabaseDAO, application: Application) :
     }
 
     fun isAfter12Am() :Boolean { return Calendar.getInstance().timeInMillis>getToday12AmInMilli()}
+    private var lastCheckIsAfter12Am = isAfter12Am()
+    fun shouldRefresh() : Boolean{
+        if (lastCheckIsAfter12Am!=isAfter12Am()){
+            lastCheckIsAfter12Am = isAfter12Am()
+            return true
+        }
+        return false
+    }
 
+    fun refresh(){
+        _unlockEvents12H=_unlockEvents12HRefresh()
+    }
+    fun _unlockEvents12HRefresh() : LiveData<List<UnlockEvent>>{
+        return if (isAfter12Am()){
+            database.getAllUnlcoksFromTime(getToday12AmInMilli())
+        }
+            else  {
+            database.getAllUnlocksBetweenTwoTimes(getCurrentDateInMilli(),getToday12AmInMilli())
+        }
+    }
+    fun printValues(){
+        _unlockEvents12H.value?.let {
+            for ( event in it)
+            {
+                Log.i("Test", "event in ${formatDateFromMillisecondsLong(event.eventTime)}")
+            }
+        }
+    }
 
 
 }

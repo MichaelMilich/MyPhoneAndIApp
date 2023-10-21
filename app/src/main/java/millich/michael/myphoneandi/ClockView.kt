@@ -71,17 +71,12 @@ class ClockView : RelativeLayout {
         viewModel = binding.viewModelClock!!
         if (viewModel.isAfter12Am())
             binding.analogClockView.setImageResource(R.drawable.ic_analog_clock_12_24)
-//        viewModel.isAfter12Am.observe(binding.lifecycleOwner!!,androidx.lifecycle.Observer{
-//            checkClock()
-//        })
     }
 
     /**
      * update the analog clock to 0-12H or 12-24H image.
      */
     fun checkClock(){
-        Log.i("Test","Are we now between 12 and 24  = ${viewModel.isAfter12Am()}")
-        Snackbar.make(this,"Are we now between 12 and 24  = ${viewModel.isAfter12Am()}",Snackbar.LENGTH_SHORT).show()
         if (viewModel.isAfter12Am())
             binding.analogClockView.setImageResource(R.drawable.ic_analog_clock_12_24)
         else
