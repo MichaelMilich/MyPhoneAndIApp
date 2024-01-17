@@ -11,12 +11,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package millich.michael.myphoneandi
+package millich.michael.myphoneandi.utils
 
-import android.content.Context
 import android.view.View
 import android.view.ViewTreeObserver
-import androidx.appcompat.app.AppCompatActivity
 import java.text.SimpleDateFormat
 import java.util.*
 

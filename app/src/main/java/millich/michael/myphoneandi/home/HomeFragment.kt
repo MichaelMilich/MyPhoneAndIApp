@@ -5,16 +5,17 @@ import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.preference.PreferenceManager
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import millich.michael.myphoneandi.ClockView
 import millich.michael.myphoneandi.R
-import millich.michael.myphoneandi.afterMeasured
+import millich.michael.myphoneandi.utils.afterMeasured
 import millich.michael.myphoneandi.database.UnlockDatabase
 import millich.michael.myphoneandi.database.UnlockEvent
 import millich.michael.myphoneandi.databinding.FragmentHomeBinding
@@ -24,8 +25,10 @@ import millich.michael.myphoneandi.databinding.FragmentHomeBinding
  * provides the viewModel with al required for it to function.
  * Sets up the Clock View. as well as database.
  */
+
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
-    private lateinit var viewModel: HomeViewModel
+    private val viewModel: HomeViewModel by viewModels()
     private lateinit var binder: FragmentHomeBinding
     private lateinit var clockView: ClockView
 
@@ -39,12 +42,7 @@ class HomeFragment : Fragment() {
             container,
             false
         )
-        // all the basic requirements.
-        val application = requireNotNull(this.activity).application
-        val databaseDAO = UnlockDatabase.getInstance(application).unlockDatabaseDAO
 
-        val viewModelFactory = HomeViewModelFactory(application,databaseDAO)
-        viewModel = ViewModelProvider(this,viewModelFactory).get(HomeViewModel::class.java)
         binding.viewModel=viewModel
         binding.bottom.viewModel=viewModel
 

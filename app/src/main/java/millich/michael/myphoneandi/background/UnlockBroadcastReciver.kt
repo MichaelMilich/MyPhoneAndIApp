@@ -7,27 +7,45 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import millich.michael.myphoneandi.*
 import millich.michael.myphoneandi.database.UnlockDatabase
 import millich.michael.myphoneandi.database.UnlockEvent
+import millich.michael.myphoneandi.utils.CHANNEL_ID_1
+import millich.michael.myphoneandi.utils.ONGOING_NOTIFICATION_ID
+import millich.michael.myphoneandi.utils.STOP_MY_SERVICE
+import millich.michael.myphoneandi.utils.formatDateFromMillisecondsLong
+import millich.michael.myphoneandi.utils.getCurrentDateInMilli
 
 
 object UnlockBroadcastReceiver : BroadcastReceiver() {
 
-
+    val TAG = "UnlockBroadcastReceiver"
     override fun onReceive(context: Context, intent: Intent) {
         val database = UnlockDatabase.getInstance(context).unlockDatabaseDAO
         val unlockEvent = UnlockEvent()
-        runBlocking {
-            launch {
-                database.Insert(unlockEvent)
-                val newUnlock = database.getLastUnlock()
-                val unlockCount =database.getTodayUnlocksCountAfterTimeNoLiveData(getCurrentDateInMilli())
-                showNotification(context," $unlockCount  unlocks today" ,"last time at ${formatDateFromMillisecondsLong(newUnlock!!.eventTime)}")
-            }
+        CoroutineScope(Dispatchers.IO).launch {
+            database.Insert(unlockEvent)
+            val newUnlock = database.getLastUnlock()
+            val unlockCount =database.getTodayUnlocksCountAfterTimeNoLiveData(
+                getCurrentDateInMilli()
+            )
+            Log.d(TAG, "updating notification")
+            showNotification(context," $unlockCount  unlocks today" ,"last time at ${formatDateFromMillisecondsLong(newUnlock!!.eventTime)}")
         }
+//        runBlocking {
+//            launch {
+//                database.Insert(unlockEvent)
+//                val newUnlock = database.getLastUnlock()
+//                val unlockCount =database.getTodayUnlocksCountAfterTimeNoLiveData(
+//                    getCurrentDateInMilli()
+//                )
+//                showNotification(context," $unlockCount  unlocks today" ,"last time at ${formatDateFromMillisecondsLong(newUnlock!!.eventTime)}")
+//            }
+//        }
 
 
     }

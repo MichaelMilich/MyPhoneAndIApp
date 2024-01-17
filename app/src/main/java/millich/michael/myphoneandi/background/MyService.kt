@@ -10,11 +10,17 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import millich.michael.myphoneandi.*
 import millich.michael.myphoneandi.database.UnlockDatabase
 import millich.michael.myphoneandi.database.UnlockDatabaseDAO
+import millich.michael.myphoneandi.utils.CHANNEL_ID_1
+import millich.michael.myphoneandi.utils.ONGOING_NOTIFICATION_ID
+import millich.michael.myphoneandi.utils.STOP_MY_SERVICE
+import millich.michael.myphoneandi.utils.getCurrentDateInMilli
 
 /**
  * The service that runs with the application.
@@ -61,10 +67,14 @@ class MyService: Service()  {
         if(isServiceRunning) {
             return Service.START_STICKY
         }
-        runBlocking { launch {
+        CoroutineScope(Dispatchers.IO).launch {
             val unlockCount =database.getTodayUnlocksCountAfterTimeNoLiveData(getCurrentDateInMilli())
             showNotificationAndStartForeground(" $unlockCount  unlocks today" , "")
-        } }
+        }
+//        runBlocking { launch {
+//            val unlockCount =database.getTodayUnlocksCountAfterTimeNoLiveData(getCurrentDateInMilli())
+//            showNotificationAndStartForeground(" $unlockCount  unlocks today" , "")
+//        } }
         Log.i(TAG, "inside MyService onStartCommand")
         registerReceiver(UnlockBroadcastReceiver, IntentFilter(Intent.ACTION_USER_PRESENT))
         isServiceRunning=true
@@ -89,6 +99,7 @@ class MyService: Service()  {
 
 
      private fun showNotificationAndStartForeground(title: String, message: String) {
+         Log.i(TAG, "showNotificationAndStartForeground - starting notification")
         val intent = Intent(applicationContext, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
@@ -104,6 +115,7 @@ class MyService: Service()  {
             .setContentTitle(title) // title for notification
             .setContentText(message)// message for notification
             .setContentIntent(pendingIntent)
+            .setContentText(message)// message for notification
             .addAction(R.drawable.ic_my_phone_and_i_notification_option2,applicationContext.resources.getString(R.string.stop_service),pendingStopIntent)
             .build()
 

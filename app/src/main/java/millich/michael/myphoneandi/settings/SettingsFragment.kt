@@ -1,24 +1,15 @@
 package millich.michael.myphoneandi.settings
 
-import android.app.Application
 import android.content.*
 import android.os.Bundle
-import android.os.IBinder
-import android.os.PowerManager
 import android.provider.Settings
-import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
 import androidx.preference.SwitchPreferenceCompat
-import com.google.android.material.snackbar.Snackbar
 import millich.michael.myphoneandi.R
-import millich.michael.myphoneandi.START_MY_SERVICE
-import millich.michael.myphoneandi.STOP_MY_SERVICE
+import millich.michael.myphoneandi.utils.START_MY_SERVICE
+import millich.michael.myphoneandi.utils.STOP_MY_SERVICE
 import millich.michael.myphoneandi.background.MyService
 
 /**

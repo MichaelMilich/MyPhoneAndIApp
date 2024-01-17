@@ -1,26 +1,30 @@
 package millich.michael.myphoneandi.home
 
-import android.app.Application
-import android.content.Context
-import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.*
-import millich.michael.myphoneandi.*
-import millich.michael.myphoneandi.background.MyService
+
+import dagger.hilt.android.lifecycle.HiltViewModel
 import millich.michael.myphoneandi.database.UnlockDatabaseDAO
 import millich.michael.myphoneandi.database.UnlockEvent
+import millich.michael.myphoneandi.utils.formatDateFromMillisecondsLong
+import millich.michael.myphoneandi.utils.formatSimpleDate
+import millich.michael.myphoneandi.utils.formatTimeWords
+import millich.michael.myphoneandi.utils.getCurrentDateInMilli
+import millich.michael.myphoneandi.utils.getToday12AmInMilli
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Currently the main viewModel for my application.
  * It is responsible for starting the Service and comunicating with it.
  * It is also responsible for providing the livedata from the database for the databinding.
  */
-class HomeViewModel(val database: UnlockDatabaseDAO, application: Application) : AndroidViewModel(application) {
+
+@HiltViewModel
+class HomeViewModel @Inject constructor(val database: UnlockDatabaseDAO) : ViewModel() {
     companion object{
         val TAG = "HomeViewModel"
     }
-    private val appContext: Context get() {return  getApplication<Application>().applicationContext}
     /*init {
         viewModelScope.launch { // check if the database is empty, if it is insert at least one unlock.
             //Currently i am using a pre-populated table so this code doesn't get used.
@@ -41,7 +45,7 @@ class HomeViewModel(val database: UnlockDatabaseDAO, application: Application) :
     // Keeping the last unlock in the memory of the application. might be useful.
     // I also show when we had the last unlock in lastunlockTime.
     private val _lastUnlock = database.getLastUnlockLiveData()
-    val lastUnlockTime : LiveData<String> = Transformations.map( _lastUnlock) { user ->
+    val lastUnlockTime : LiveData<String> = _lastUnlock.map { user ->
         formatDateFromMillisecondsLong(
             user.eventTime
         )
@@ -57,17 +61,10 @@ class HomeViewModel(val database: UnlockDatabaseDAO, application: Application) :
             return  _unlockEvents12H
         }
 
-    /**
-     * On starting the ViewModel - start the service.
-     */
-    init {
-        val _intent = Intent(appContext, MyService::class.java)
-        _intent.action = START_MY_SERVICE
-        Log.i(TAG, "calling to start MyService ")
-        appContext.startForegroundService(_intent)
-    }
 
-    fun isAfter12Am() :Boolean { return Calendar.getInstance().timeInMillis>getToday12AmInMilli()}
+
+    fun isAfter12Am() :Boolean { return Calendar.getInstance().timeInMillis> getToday12AmInMilli()
+    }
     private var lastCheckIsAfter12Am = isAfter12Am()
     fun shouldRefresh() : Boolean{
         if (lastCheckIsAfter12Am!=isAfter12Am()){
@@ -85,7 +82,7 @@ class HomeViewModel(val database: UnlockDatabaseDAO, application: Application) :
             database.getAllUnlcoksFromTime(getToday12AmInMilli())
         }
             else  {
-            database.getAllUnlocksBetweenTwoTimes(getCurrentDateInMilli(),getToday12AmInMilli())
+            database.getAllUnlocksBetweenTwoTimes(getCurrentDateInMilli(), getToday12AmInMilli())
         }
     }
     fun printValues(){

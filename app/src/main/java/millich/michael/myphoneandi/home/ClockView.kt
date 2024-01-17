@@ -1,15 +1,14 @@
-package millich.michael.myphoneandi
+package millich.michael.myphoneandi.home
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.RelativeLayout
-import com.google.android.material.snackbar.Snackbar
+import millich.michael.myphoneandi.R
+import millich.michael.myphoneandi.utils.calculateAngle
 import millich.michael.myphoneandi.database.UnlockEvent
 import millich.michael.myphoneandi.databinding.ClockViewBinding
-import millich.michael.myphoneandi.home.HomeViewModel
 import kotlin.math.cos
 import kotlin.math.sin
 

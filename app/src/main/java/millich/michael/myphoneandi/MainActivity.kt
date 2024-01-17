@@ -2,10 +2,8 @@ package millich.michael.myphoneandi
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -13,19 +11,32 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.findNavController
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import millich.michael.myphoneandi.background.MyService
 import millich.michael.myphoneandi.databinding.ActivityMainBinding
+import millich.michael.myphoneandi.home.HomeViewModel
+import millich.michael.myphoneandi.utils.CHANNEL_DESCRIPTION_1
+import millich.michael.myphoneandi.utils.CHANNEL_ID_1
+import millich.michael.myphoneandi.utils.CHANNEL_NAME_1
+import millich.michael.myphoneandi.utils.START_MY_SERVICE
 
 /**
  * The Main Activity of the application.
  * The application uses a single activity with a lot of fragments and a navigation panel between them.
  * currently only one fragment.
  */
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    companion object {
+        val TAG = "MainActivity"
+    }
+
     private lateinit var drawerLayout: DrawerLayout
     /**
      * On create - almost created single time. except for oriantation changes.
@@ -48,6 +59,9 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupActionBarWithNavController(this,navController,drawerLayout)
         NavigationUI.setupWithNavController(binding.navView, navController)
 
+        lifecycleScope.launch(Dispatchers.IO) {
+            startMyService()
+        }
     }
 
     /**
@@ -90,6 +104,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    /**
+     * On starting the Activity - start the service. currently calling it from Dispatchers.IO
+     */
+    private fun startMyService() {
+        val _intent = Intent(applicationContext, MyService::class.java)
+        _intent.action = START_MY_SERVICE
+        Log.i(TAG, "calling to start MyService ")
+        applicationContext.startForegroundService(_intent)
     }
 
 }

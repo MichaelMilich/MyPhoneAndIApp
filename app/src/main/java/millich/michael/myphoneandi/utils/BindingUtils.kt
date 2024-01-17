@@ -1,9 +1,11 @@
-package millich.michael.myphoneandi
+package millich.michael.myphoneandi.utils
 
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import millich.michael.myphoneandi.R
 import millich.michael.myphoneandi.database.UnlockEvent
+import millich.michael.myphoneandi.home.ClockView
 import millich.michael.myphoneandi.home.HomeViewModel
 
 
