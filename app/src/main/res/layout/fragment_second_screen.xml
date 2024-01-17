@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="millich.michael.myphoneandi.onboarding.ViewPagerViewModel" />
+            type="millich.michael.myphoneandi.onboarding.OnBoardingViewModel" />
     </data>
 
     <ScrollView

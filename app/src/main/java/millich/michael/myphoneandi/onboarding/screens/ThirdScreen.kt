@@ -5,19 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.findNavController
-import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.snackbar.Snackbar
 import millich.michael.myphoneandi.R
 import millich.michael.myphoneandi.databinding.FragmentThirdScreenBinding
-import millich.michael.myphoneandi.onboarding.ViewPagerViewModel
+import millich.michael.myphoneandi.onboarding.OnBoardingViewModel
 
 /**
  * Also, very basic third screen.
@@ -28,7 +23,7 @@ import millich.michael.myphoneandi.onboarding.ViewPagerViewModel
  */
 class ThirdScreen() : Fragment() {
     private lateinit var textView: TextView // save the link to this view for later
-    private val viewModel : ViewPagerViewModel by activityViewModels()
+    private val viewModel : OnBoardingViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -1,25 +1,18 @@
 package millich.michael.myphoneandi.onboarding.screens
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.PowerManager
 import android.provider.Settings
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
-import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.snackbar.Snackbar
 import millich.michael.myphoneandi.R
 import millich.michael.myphoneandi.databinding.FragmentSecondScreenBinding
-import millich.michael.myphoneandi.onboarding.ViewPagerViewModel
+import millich.michael.myphoneandi.onboarding.OnBoardingViewModel
 
 /**
  * Second screen of the onBoarding.
@@ -30,7 +23,7 @@ import millich.michael.myphoneandi.onboarding.ViewPagerViewModel
  * show me how - should open the youtube to show how to do this.
  */
 class SecondScreen() : Fragment() {
-    private val viewModel : ViewPagerViewModel by activityViewModels()
+    private val viewModel : OnBoardingViewModel by activityViewModels()
 
     // The activityResultLauncher that will wait for the results of the Intent used to open the settings page
     private val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){

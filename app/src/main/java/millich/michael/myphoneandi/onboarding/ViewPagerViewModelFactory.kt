@@ -9,9 +9,9 @@ class ViewPagerViewModelFactory(private val application: Application
 ) : ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ViewPagerViewModel::class.java)) {
-            return ViewPagerViewModel(application) as T
+        if (modelClass.isAssignableFrom(OnBoardingViewModel::class.java)) {
+            return OnBoardingViewModel(application) as T
         }
-        throw IllegalArgumentException("Unknown ViewPagerViewModel class")
+        throw IllegalArgumentException("Unknown OnBoardingViewModel class")
     }
 }

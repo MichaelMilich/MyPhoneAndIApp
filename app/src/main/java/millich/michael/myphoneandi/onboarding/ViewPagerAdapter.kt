@@ -16,7 +16,7 @@ private const val NUM_TABS = 3
  * All the screens share the same viewModel pointer - so the adapter that calls the screens should also have the pointer.
  */
 class ViewPagerAdapter(
-    val viewModel : ViewPagerViewModel,
+    val viewModel : OnBoardingViewModel,
     fm: FragmentManager,
     lifecycle: Lifecycle
 ) : FragmentStateAdapter(fm, lifecycle) {

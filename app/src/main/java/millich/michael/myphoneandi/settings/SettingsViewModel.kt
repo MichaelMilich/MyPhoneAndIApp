@@ -35,7 +35,7 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
             if (modelClass.isAssignableFrom(SettingsViewModel::class.java)) {
                 return SettingsViewModel(application) as T
             }
-            throw IllegalArgumentException("Unknown ViewPagerViewModel class")
+            throw IllegalArgumentException("Unknown OnBoardingViewModel class")
         }
     }
 

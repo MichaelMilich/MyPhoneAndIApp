@@ -5,20 +5,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
-import androidx.viewpager2.widget.ViewPager2
 import millich.michael.myphoneandi.R
 import millich.michael.myphoneandi.databinding.FragmentFirstScreenBinding
-import millich.michael.myphoneandi.onboarding.ViewPagerViewModel
+import millich.michael.myphoneandi.onboarding.OnBoardingViewModel
 
 /**
  * First Screen in OnBoarding.
  * very short and Self Explanitory, no Comments
  */
 class FirstScreen() : Fragment() {
-private val viewModel : ViewPagerViewModel by activityViewModels()
+private val viewModel : OnBoardingViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

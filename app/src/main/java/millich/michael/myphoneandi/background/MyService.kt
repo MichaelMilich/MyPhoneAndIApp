@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Binder
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.launch
@@ -20,6 +21,9 @@ import millich.michael.myphoneandi.database.UnlockDatabaseDAO
  * Does not run on it's own process but uses corutines for any action
  */
 class MyService: Service()  {
+    companion object {
+        val TAG = "MyService"
+    }
     // creating the interface for the connection between the servie and viewmodel.
     inner class LocalBinder : Binder() {
         fun getService() : MyService =this@MyService
@@ -36,6 +40,7 @@ class MyService: Service()  {
      */
     override fun onCreate() {
         super.onCreate()
+        Log.i(TAG, "inside myservice on create")
         val application = requireNotNull(this).application
         database = UnlockDatabase.getInstance(application).unlockDatabaseDAO
         isServiceRunning=false
@@ -60,6 +65,7 @@ class MyService: Service()  {
             val unlockCount =database.getTodayUnlocksCountAfterTimeNoLiveData(getCurrentDateInMilli())
             showNotificationAndStartForeground(" $unlockCount  unlocks today" , "")
         } }
+        Log.i(TAG, "inside MyService onStartCommand")
         registerReceiver(UnlockBroadcastReceiver, IntentFilter(Intent.ACTION_USER_PRESENT))
         isServiceRunning=true
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
@@ -67,7 +73,7 @@ class MyService: Service()  {
         editor.putBoolean(resources.getString(R.string.background_service_run),true)
         editor.apply()
 
-        return Service.START_STICKY
+        return START_STICKY
     }
 
     /**

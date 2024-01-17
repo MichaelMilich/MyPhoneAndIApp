@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import millich.michael.myphoneandi.onboarding.ViewPagerViewModel
+import millich.michael.myphoneandi.onboarding.OnBoardingViewModel
 import millich.michael.myphoneandi.onboarding.screens.FirstScreen
 import millich.michael.myphoneandi.onboarding.screens.SecondScreen
 import millich.michael.myphoneandi.onboarding.screens.ThirdScreen
@@ -12,7 +12,7 @@ import millich.michael.myphoneandi.onboarding.screens.ThirdScreen
 private const val NUM_TABS = 3
 
 class HomeViewPagerAdapter(
-    val viewModel : ViewPagerViewModel,
+    val viewModel : OnBoardingViewModel,
     fm: FragmentManager,
     lifecycle: Lifecycle
 ) : FragmentStateAdapter(fm, lifecycle) {
