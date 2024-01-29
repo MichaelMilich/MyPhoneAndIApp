@@ -24,6 +24,7 @@ import millich.michael.myphoneandi.home.HomeViewModel
 import millich.michael.myphoneandi.utils.CHANNEL_DESCRIPTION_1
 import millich.michael.myphoneandi.utils.CHANNEL_ID_1
 import millich.michael.myphoneandi.utils.CHANNEL_NAME_1
+import millich.michael.myphoneandi.utils.MLog
 import millich.michael.myphoneandi.utils.START_MY_SERVICE
 
 /**
@@ -93,7 +94,7 @@ class MainActivity : AppCompatActivity() {
                 Snackbar.make(drawerLayout, "Clickity clack", Snackbar.LENGTH_SHORT).show()
                 val fragment= supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
                 val msg = fragment.toString() ?: "null "
-                Log.i("Test","fragment is $msg")
+                MLog.i(TAG,"fragment is $msg")
                 fragment?.let {
                     val transaction = supportFragmentManager.beginTransaction()
                     transaction.detach(it)
@@ -112,7 +113,7 @@ class MainActivity : AppCompatActivity() {
     private fun startMyService() {
         val _intent = Intent(applicationContext, MyService::class.java)
         _intent.action = START_MY_SERVICE
-        Log.i(TAG, "calling to start MyService ")
+        MLog.i(TAG, "calling to start MyService ")
         applicationContext.startForegroundService(_intent)
     }
 

@@ -15,6 +15,7 @@ import millich.michael.myphoneandi.*
 import millich.michael.myphoneandi.database.UnlockDatabase
 import millich.michael.myphoneandi.database.UnlockEvent
 import millich.michael.myphoneandi.utils.CHANNEL_ID_1
+import millich.michael.myphoneandi.utils.MLog
 import millich.michael.myphoneandi.utils.ONGOING_NOTIFICATION_ID
 import millich.michael.myphoneandi.utils.STOP_MY_SERVICE
 import millich.michael.myphoneandi.utils.formatDateFromMillisecondsLong
@@ -33,19 +34,9 @@ object UnlockBroadcastReceiver : BroadcastReceiver() {
             val unlockCount =database.getTodayUnlocksCountAfterTimeNoLiveData(
                 getCurrentDateInMilli()
             )
-            Log.d(TAG, "updating notification")
+            MLog.d(TAG, "updating notification : '$unlockCount  unlocks today' ")
             showNotification(context," $unlockCount  unlocks today" ,"last time at ${formatDateFromMillisecondsLong(newUnlock!!.eventTime)}")
         }
-//        runBlocking {
-//            launch {
-//                database.Insert(unlockEvent)
-//                val newUnlock = database.getLastUnlock()
-//                val unlockCount =database.getTodayUnlocksCountAfterTimeNoLiveData(
-//                    getCurrentDateInMilli()
-//                )
-//                showNotification(context," $unlockCount  unlocks today" ,"last time at ${formatDateFromMillisecondsLong(newUnlock!!.eventTime)}")
-//            }
-//        }
 
 
     }
@@ -64,6 +55,7 @@ object UnlockBroadcastReceiver : BroadcastReceiver() {
             .setContentText(message)// message for notification
             .setContentIntent(pendingIntent)
             .addAction(R.drawable.ic_my_phone_and_i_notification_option2,context.resources.getString(R.string.stop_service),pendingStopIntent)
+            .setOngoing(true)
             .build()
         mNotificationManager.notify(ONGOING_NOTIFICATION_ID, notification)
     }

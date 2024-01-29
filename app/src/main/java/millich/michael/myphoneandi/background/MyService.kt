@@ -5,10 +5,13 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.ServiceInfo
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.app.ServiceCompat
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +21,7 @@ import millich.michael.myphoneandi.*
 import millich.michael.myphoneandi.database.UnlockDatabase
 import millich.michael.myphoneandi.database.UnlockDatabaseDAO
 import millich.michael.myphoneandi.utils.CHANNEL_ID_1
+import millich.michael.myphoneandi.utils.MLog
 import millich.michael.myphoneandi.utils.ONGOING_NOTIFICATION_ID
 import millich.michael.myphoneandi.utils.STOP_MY_SERVICE
 import millich.michael.myphoneandi.utils.getCurrentDateInMilli
@@ -46,7 +50,7 @@ class MyService: Service()  {
      */
     override fun onCreate() {
         super.onCreate()
-        Log.i(TAG, "inside myservice on create")
+        MLog.i(TAG, "inside myservice on create")
         val application = requireNotNull(this).application
         database = UnlockDatabase.getInstance(application).unlockDatabaseDAO
         isServiceRunning=false
@@ -59,13 +63,14 @@ class MyService: Service()  {
      * Else the service is eaither runing already so we dont need to do anything or we should set up the broadcast reciever from corutines.
      */
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if(STOP_MY_SERVICE == intent!!.action)
+        MLog.w(TAG, "[onStartCommand] intent = $intent, flags = $flags, startId = $startId")
+        if(STOP_MY_SERVICE == intent?.action)
         {
             stopSelf()
             return super.onStartCommand(intent, flags, startId)
         }
         if(isServiceRunning) {
-            return Service.START_STICKY
+            return START_STICKY
         }
         CoroutineScope(Dispatchers.IO).launch {
             val unlockCount =database.getTodayUnlocksCountAfterTimeNoLiveData(getCurrentDateInMilli())
@@ -75,7 +80,7 @@ class MyService: Service()  {
 //            val unlockCount =database.getTodayUnlocksCountAfterTimeNoLiveData(getCurrentDateInMilli())
 //            showNotificationAndStartForeground(" $unlockCount  unlocks today" , "")
 //        } }
-        Log.i(TAG, "inside MyService onStartCommand")
+        MLog.i(TAG, "inside MyService onStartCommand")
         registerReceiver(UnlockBroadcastReceiver, IntentFilter(Intent.ACTION_USER_PRESENT))
         isServiceRunning=true
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
@@ -99,7 +104,7 @@ class MyService: Service()  {
 
 
      private fun showNotificationAndStartForeground(title: String, message: String) {
-         Log.i(TAG, "showNotificationAndStartForeground - starting notification")
+         MLog.i(TAG, "showNotificationAndStartForeground - starting notification")
         val intent = Intent(applicationContext, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
@@ -117,8 +122,17 @@ class MyService: Service()  {
             .setContentIntent(pendingIntent)
             .setContentText(message)// message for notification
             .addAction(R.drawable.ic_my_phone_and_i_notification_option2,applicationContext.resources.getString(R.string.stop_service),pendingStopIntent)
+            .setOngoing(true)
             .build()
 
+         ServiceCompat.startForeground( this,
+              ONGOING_NOTIFICATION_ID,
+             notification ,
+             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                 ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+             } else {
+                 0
+             })
         startForeground(ONGOING_NOTIFICATION_ID,notification)
     }
 

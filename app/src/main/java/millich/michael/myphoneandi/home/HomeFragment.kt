@@ -19,6 +19,7 @@ import millich.michael.myphoneandi.utils.afterMeasured
 import millich.michael.myphoneandi.database.UnlockDatabase
 import millich.michael.myphoneandi.database.UnlockEvent
 import millich.michael.myphoneandi.databinding.FragmentHomeBinding
+import millich.michael.myphoneandi.utils.MLog
 
 /**
  * Currently the main fragment in use in the application.
@@ -28,6 +29,10 @@ import millich.michael.myphoneandi.databinding.FragmentHomeBinding
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
+    companion object {
+        val TAG = "HomeFragment"
+    }
+
     private val viewModel: HomeViewModel by viewModels()
     private lateinit var binder: FragmentHomeBinding
     private lateinit var clockView: ClockView
@@ -116,19 +121,19 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext().applicationContext)
         val DidFinnishOnBoarding = sharedPreferences.getBoolean("OnBoardingDone",false)
-        Log.i("OnBoarding","value = $DidFinnishOnBoarding")
+        MLog.i("OnBoarding","value = $DidFinnishOnBoarding")
         if (!DidFinnishOnBoarding)
             findNavController().navigate(R.id.action_homeFragment_to_viewPagerFragment)
     }
 
     override fun onStart() {
-        Log.i("Test","On Start")
+        MLog.i(TAG,"On Start")
         viewLifecycleOwner.lifecycleScope.launch {
             clockView.afterMeasured {
                 clockView.checkClock()
                 binder.viewModel?.let {
                     if(it.shouldRefresh()){
-                        Log.i("Test","Refresh")
+                        MLog.i(TAG,"Refresh")
                         it.refresh()
                     }
                 }

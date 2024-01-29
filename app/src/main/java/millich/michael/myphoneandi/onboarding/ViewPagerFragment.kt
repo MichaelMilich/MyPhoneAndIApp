@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayoutMediator
 import millich.michael.myphoneandi.R
 import millich.michael.myphoneandi.databinding.FragmentViewPagerBinding
+import millich.michael.myphoneandi.utils.MLog
 
 /**
  * The main fragment for the onBoarding process.
@@ -55,13 +56,13 @@ class ViewPagerFragment : Fragment() {
         // When we click on Next ( in the 1st and 2nd screens) we change the viewModel's screen number Livedata
         //Causing the observer to change the screen on the viewPager
         viewModel.screenNumber.observe(viewLifecycleOwner) { screenNumber ->
-            Log.d(OnBoardingViewModel.TAG, "OnboardingFragment, screen number = $screenNumber")
+            MLog.d(OnBoardingViewModel.TAG, "OnboardingFragment, screen number = $screenNumber")
             binding.viewPager.setCurrentItem(screenNumber, true)
         }
 
         //Another navigation feature, if the viewModel's battery permission is true - go to the last screen number
         viewModel.isPermissionGiven.observe(viewLifecycleOwner) { bool ->
-            Log.d(OnBoardingViewModel.TAG, "OnboardingFragment, permission given? $bool")
+            MLog.d(OnBoardingViewModel.TAG, "OnboardingFragment, permission given? $bool")
             if (bool) binding.viewPager.setCurrentItem(2, true)
         }
 

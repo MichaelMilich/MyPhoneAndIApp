@@ -48,10 +48,15 @@
     <string name="background_service_run">background_service_run</string>
     <string name="background_service_off_summary">The app will not collect new data</string>
     <string name="background_service_on_summary">The service is running</string>
-    <string name="background_service_run_title">enable background service to run</string>
+    <string name="background_service_run_title">Enable background service to run</string>
     <string name="background_service_run_battery_optimization">background_service_run_battery_optimization</string>
     <string name="background_service_run_battery_optimization_off_summary">The app might stop working from time to time due to android battery optimization</string>
     <string name="background_service_run_battery_optimization_on_summary">The service is running and is excluded from battery optimization</string>
     <string name="background_service_run_battery_optimization_title">Let the service run indefinitely</string>
     <string name="refresh">refresh</string>
+    <string name="show_notification_key">show_notification_key</string>
+    <string name="background_service_notification_summaryOn">The service is able to send notification, you will be able to see each notification even while the app is close and the service is running</string>
+    <string name="background_service_notification_summaryOff">There will be no visual indication if the service is running in the background while the app is closed, the service might be running and it might not</string>
+    <string name="background_service_notification_title">Let the service show notifications</string>
+
 </resources>

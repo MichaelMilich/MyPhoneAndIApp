@@ -15,6 +15,12 @@
             app:summaryOn="@string/background_service_run_battery_optimization_on_summary"
             app:title="@string/background_service_run_battery_optimization_title" />
 
+        <SwitchPreferenceCompat
+            app:key="@string/show_notification_key"
+            app:summaryOff="@string/background_service_notification_summaryOff"
+            app:summaryOn="@string/background_service_notification_summaryOn"
+            app:title="@string/background_service_notification_title" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

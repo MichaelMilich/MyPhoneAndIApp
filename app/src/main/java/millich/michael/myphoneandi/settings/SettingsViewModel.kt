@@ -5,38 +5,30 @@ import android.content.Context
 import android.os.PowerManager
 import androidx.lifecycle.*
 import androidx.preference.PreferenceManager
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 class SettingsViewModel(application: Application): AndroidViewModel(application) {
-    private val _isPermissionGiven : MutableLiveData<Boolean> = MutableLiveData(false)
-    val isPermissionGiven : LiveData<Boolean>
+    companion object{
+        val TAG = "SettingsViewModel"
+    }
+    private val appContext: Context  get() {return  getApplication<Application>().applicationContext}
+    private val _isIgnoringBatteryOptimizationsGiven : MutableLiveData<Boolean> = MutableLiveData(false)
+    val isIgnoringBatteryOptimizationsGiven : LiveData<Boolean>
         get() {
-            val powerManager = getApplication<Application>().applicationContext.getSystemService(
-                Context.POWER_SERVICE) as PowerManager
-            val packageName = getApplication<Application>().applicationContext.packageName
-            _isPermissionGiven.value = powerManager.isIgnoringBatteryOptimizations(packageName)
-            return  _isPermissionGiven
+            val powerManager = appContext.getSystemService(Context.POWER_SERVICE) as PowerManager
+            val packageName = appContext.packageName
+            _isIgnoringBatteryOptimizationsGiven.value = powerManager.isIgnoringBatteryOptimizations(packageName)
+            return  _isIgnoringBatteryOptimizationsGiven
         }
 
     /**
      * Write the battery optimization status to the shared preference of the application
      */
     fun writeBatteryOptimizationPref(key : String, value: Boolean){
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplication<Application>().applicationContext)
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(appContext)
         val editor = sharedPreferences.edit()
         editor.putBoolean(key,value)
         editor.apply()
-    }
-
-
-
-    class Factory (private val application: Application
-    ) : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(SettingsViewModel::class.java)) {
-                return SettingsViewModel(application) as T
-            }
-            throw IllegalArgumentException("Unknown OnBoardingViewModel class")
-        }
     }
 
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import millich.michael.myphoneandi.database.UnlockDatabaseDAO
 import millich.michael.myphoneandi.database.UnlockEvent
+import millich.michael.myphoneandi.utils.MLog
 import millich.michael.myphoneandi.utils.formatDateFromMillisecondsLong
 import millich.michael.myphoneandi.utils.formatSimpleDate
 import millich.michael.myphoneandi.utils.formatTimeWords
@@ -89,7 +90,7 @@ class HomeViewModel @Inject constructor(val database: UnlockDatabaseDAO) : ViewM
         _unlockEvents12H.value?.let {
             for ( event in it)
             {
-                Log.i(TAG, "event in ${formatDateFromMillisecondsLong(event.eventTime)}")
+                MLog.i(TAG, "event in ${formatDateFromMillisecondsLong(event.eventTime)}")
             }
         }
     }

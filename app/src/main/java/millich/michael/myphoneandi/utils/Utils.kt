@@ -55,6 +55,21 @@ fun formatTimeWords() :String {
     else
         return " 0 - 12 (AM)"
 }
+
+fun getCurrentTimeInString(): String
+{
+    val calendar = Calendar.getInstance()
+    val simpleDateFormat = SimpleDateFormat("yyyy_MM_dd_hh:mm:ss")
+    simpleDateFormat.timeZone = TimeZone.getDefault()
+    return simpleDateFormat.format(calendar.time)
+}
+fun getCurrentTimeInStringUnderScore(): String
+{
+    val calendar = Calendar.getInstance()
+    val simpleDateFormat = SimpleDateFormat("yyyy_MM_dd_hh_mm_ss")
+    simpleDateFormat.timeZone = TimeZone.getDefault()
+    return simpleDateFormat.format(calendar.time)
+}
 fun getCurrentDateInMilli() : Long{
     val today = Calendar.getInstance()
     today.set(Calendar.MILLISECOND,0)
