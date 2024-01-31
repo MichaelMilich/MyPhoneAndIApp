@@ -13,12 +13,12 @@ import androidx.room.RoomDatabase
  * so you can reuse it.
  * I AM :)
  */
-@Database(entities = [UnlockEvent::class], version = 1, exportSchema = false)
-abstract class UnlockDatabase : RoomDatabase() {
+@Database(entities = [ScreenEvent::class], version = 1, exportSchema = false)
+abstract class ScreenEventDatabase : RoomDatabase() {
     /**
      * Connects the database to the DAO.
      */
-    abstract val unlockDatabaseDAO: UnlockDatabaseDAO
+    abstract val screenEventDatabaseDAO: ScreenEventDatabaseDAO
 
     /**
      * Define a companion object, this allows us to add functions on the SleepDatabase class.
@@ -37,7 +37,7 @@ abstract class UnlockDatabase : RoomDatabase() {
          *  thread to shared data are visible to other threads.
          */
         @Volatile
-        private var INSTANCE: UnlockDatabase? = null
+        private var INSTANCE: ScreenEventDatabase? = null
 
         /**
          * Helper function to get the database.
@@ -56,7 +56,7 @@ abstract class UnlockDatabase : RoomDatabase() {
          *
          * @param context The application context Singleton, used to get access to the filesystem.
          */
-        fun getInstance(context: Context): UnlockDatabase {
+        fun getInstance(context: Context): ScreenEventDatabase {
             // Multiple threads can ask for the database at the same time, ensure we only initialize
             // it once by using synchronized. Only one thread may enter a synchronized block at a
             // time.
@@ -69,14 +69,14 @@ abstract class UnlockDatabase : RoomDatabase() {
                 if (instance == null) {
                     instance = Room.databaseBuilder(
                         context.applicationContext,
-                        UnlockDatabase::class.java,
+                        ScreenEventDatabase::class.java,
                         "unlock_event_table"
                     )
                         // Wipes and rebuilds instead of migrating if no Migration object.
                         // Migration is not part of this lesson. You can learn more about
                         // migration with Room in this blog post:
                         // https://medium.com/androiddevelopers/understanding-migrations-with-room-f01e04b07929
-                        .fallbackToDestructiveMigration().createFromAsset("database/unlock_event_table.db").build()
+                        .fallbackToDestructiveMigration().createFromAsset("database/screen_event_table.db").build()
                     // Assign INSTANCE to the newly created database.
                     INSTANCE = instance
                 }

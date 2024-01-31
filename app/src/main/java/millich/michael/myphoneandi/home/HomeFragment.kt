@@ -1,12 +1,10 @@
 package millich.michael.myphoneandi.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -16,8 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import millich.michael.myphoneandi.R
 import millich.michael.myphoneandi.utils.afterMeasured
-import millich.michael.myphoneandi.database.UnlockDatabase
-import millich.michael.myphoneandi.database.UnlockEvent
+import millich.michael.myphoneandi.database.ScreenEvent
 import millich.michael.myphoneandi.databinding.FragmentHomeBinding
 import millich.michael.myphoneandi.utils.MLog
 
@@ -81,7 +78,7 @@ class HomeFragment : Fragment() {
         setHasOptionsMenu(true)
         return binding.root
     }
-    private fun callClockViewTags(eventList: List<UnlockEvent>){
+    private fun callClockViewTags(eventList: List<ScreenEvent>){
         if(eventList.isNotEmpty()){
             //Giving the list to the clockView.
             viewLifecycleOwner.lifecycleScope.launch {

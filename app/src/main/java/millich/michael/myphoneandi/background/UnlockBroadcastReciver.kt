@@ -10,8 +10,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import millich.michael.myphoneandi.MainActivity
 import millich.michael.myphoneandi.R
-import millich.michael.myphoneandi.database.UnlockDatabase
-import millich.michael.myphoneandi.database.UnlockEvent
+import millich.michael.myphoneandi.database.ScreenEventDatabase
+import millich.michael.myphoneandi.database.ScreenEvent
+import millich.michael.myphoneandi.database.ScreenEventType
 import millich.michael.myphoneandi.utils.CHANNEL_ID_1
 import millich.michael.myphoneandi.utils.MLog
 import millich.michael.myphoneandi.utils.ONGOING_NOTIFICATION_ID
@@ -19,17 +20,20 @@ import millich.michael.myphoneandi.utils.STOP_MY_SERVICE
 import millich.michael.myphoneandi.utils.formatDateFromMillisecondsLong
 import millich.michael.myphoneandi.utils.getCurrentDateInMilli
 
-
+/**
+ * todo: completely document this static class.
+ * NOTE, this Receiver is registered dynamically from the service since it can't be registered from the manifest.
+ */
 object UnlockBroadcastReceiver : BasicBroadcastRecevier() {
 
     override val TAG = "UnlockBroadcastReceiver"
     override fun onRecieveCallback(context: Context, intent: Intent) {
-        val database = UnlockDatabase.getInstance(context).unlockDatabaseDAO
-        val unlockEvent = UnlockEvent()
+        val database = ScreenEventDatabase.getInstance(context).screenEventDatabaseDAO
+        val unlockEvent = ScreenEvent(eventType = ScreenEventType.ScreenOn.value)
         CoroutineScope(Dispatchers.IO).launch {
             database.Insert(unlockEvent)
             val newUnlock = database.getLastUnlock()
-            val unlockCount =database.getTodayUnlocksCountAfterTimeNoLiveData(
+            val unlockCount =database.getTodayScreenEventCountAfterTimeNoLiveData(
                 getCurrentDateInMilli()
             )
             MLog.d(TAG, "updating notification : '$unlockCount  unlocks today' ")

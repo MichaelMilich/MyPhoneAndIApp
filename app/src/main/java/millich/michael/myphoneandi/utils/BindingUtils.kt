@@ -4,23 +4,23 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import millich.michael.myphoneandi.R
-import millich.michael.myphoneandi.database.UnlockEvent
+import millich.michael.myphoneandi.database.ScreenEvent
 import millich.michael.myphoneandi.home.ClockView
 import millich.michael.myphoneandi.home.HomeViewModel
 
 
 @BindingAdapter("unlockIdText")
-fun TextView.setUnlockIdText(item : UnlockEvent){
+fun TextView.setUnlockIdText(item : ScreenEvent){
     "unlock number ${item.eventId}".also { text=it }
 }
 
 @BindingAdapter("unlockTimeText")
-fun TextView.setUnlockTimeText(item: UnlockEvent){
+fun TextView.setUnlockTimeText(item: ScreenEvent){
     text = formatDateFromMillisecondsLong(item.eventTime)
 }
 
 @BindingAdapter("unlockTimeTag")
-fun ImageView.setTagImage(item: UnlockEvent){
+fun ImageView.setTagImage(item: ScreenEvent){
     setImageResource(R.drawable.ic_dot)
 }
 
@@ -40,6 +40,6 @@ fun TextView.setOnBoardingText(item : Boolean){
 
 }
 @BindingAdapter("showDate")
-fun TextView.setDateText(item: UnlockEvent){
+fun TextView.setDateText(item: ScreenEvent){
     text = formatSimpleDate()
 }

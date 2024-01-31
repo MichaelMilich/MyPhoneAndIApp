@@ -17,8 +17,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import millich.michael.myphoneandi.MainActivity
 import millich.michael.myphoneandi.R
-import millich.michael.myphoneandi.database.UnlockDatabase
-import millich.michael.myphoneandi.database.UnlockDatabaseDAO
+import millich.michael.myphoneandi.database.ScreenEventDatabase
+import millich.michael.myphoneandi.database.ScreenEventDatabaseDAO
 import millich.michael.myphoneandi.utils.CHANNEL_ID_1
 import millich.michael.myphoneandi.utils.CustomExceptionHandler
 import millich.michael.myphoneandi.utils.MLog
@@ -39,7 +39,7 @@ class MyService: Service()  {
         fun getService() : MyService =this@MyService
     }
     private val binder = LocalBinder()
-    lateinit var database: UnlockDatabaseDAO
+    lateinit var database: ScreenEventDatabaseDAO
     var isServiceRunning =false // if the service is already running, don't create another broadcast receiver and don't show new notifications
     override fun onBind(intent: Intent): IBinder {
         return binder
@@ -54,7 +54,7 @@ class MyService: Service()  {
         // this is a new thread that might be different from the applications thread, so make sure we log it as well.
         MLog.i(TAG, "inside myservice on create")
         val application = requireNotNull(this).application
-        database = UnlockDatabase.getInstance(application).unlockDatabaseDAO
+        database = ScreenEventDatabase.getInstance(application).screenEventDatabaseDAO
         isServiceRunning=false
     }
 
@@ -62,7 +62,9 @@ class MyService: Service()  {
      * The function called when starting the service.
      * This function is called via many parts of the app.
      * if we want to stop the service from notification we send an intent to this function with STOP_MY_SERVICE extra.
-     * Else the service is eaither runing already so we dont need to do anything or we should set up the broadcast reciever from corutines.
+     * If the service is already running we dont do anything.
+     * However if it is the first time we start the service, we need to register the BroadcastReceivers.
+     * (These BroadcastReceivers can't be registered in the android manifest since Android 8)
      */
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         MLog.w(TAG, "[onStartCommand] intent = $intent, flags = $flags, startId = $startId")
@@ -75,11 +77,12 @@ class MyService: Service()  {
             return START_STICKY
         }
         CoroutineScope(Dispatchers.IO).launch {
-            val unlockCount =database.getTodayUnlocksCountAfterTimeNoLiveData(getCurrentDateInMilli())
+            val unlockCount =database.getTodayScreenEventCountAfterTimeNoLiveData(getCurrentDateInMilli())
             showNotificationAndStartForeground(" $unlockCount  unlocks today" , "")
         }
         MLog.i(TAG, "inside MyService onStartCommand")
         registerReceiver(UnlockBroadcastReceiver, IntentFilter(Intent.ACTION_USER_PRESENT))
+        registerReceiver(ScreenOffReceiver, IntentFilter(Intent.ACTION_SCREEN_OFF))
         isServiceRunning=true
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         val editor = sharedPreferences.edit()
@@ -90,13 +93,14 @@ class MyService: Service()  {
     }
 
     /**
-     * Claen the service and destroy
+     * Clean the service and destroy
      * Dont froget to unregister reciver.
      */
     override fun onDestroy() {
         isServiceRunning=false
         stopForeground(true)
         unregisterReceiver(UnlockBroadcastReceiver)
+        unregisterReceiver(ScreenOffReceiver)
         super.onDestroy()
     }
 

@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import millich.michael.myphoneandi.R
 import millich.michael.myphoneandi.utils.calculateAngle
-import millich.michael.myphoneandi.database.UnlockEvent
+import millich.michael.myphoneandi.database.ScreenEvent
 import millich.michael.myphoneandi.databinding.ClockViewBinding
 import kotlin.math.cos
 import kotlin.math.sin
@@ -89,7 +89,7 @@ class ClockView : RelativeLayout {
      * If the list has a new key that isn't in the map - we add the key and value to the map and to the relativelayoutview with the apropriate claculations.
      * If the map has old keys that are not in the list - we remove them from the map and from the relativelayoutview.
      */
-    fun createTimeTags(eventList: List<UnlockEvent>, radius: Float) {
+    fun createTimeTags(eventList: List<ScreenEvent>, radius: Float) {
         for (event in eventList) {
             val key = event.eventId
             if (!eventViewMap.containsKey(key)) {

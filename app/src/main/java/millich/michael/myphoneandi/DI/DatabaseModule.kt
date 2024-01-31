@@ -5,15 +5,15 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
-import millich.michael.myphoneandi.database.UnlockDatabase
-import millich.michael.myphoneandi.database.UnlockDatabaseDAO
+import millich.michael.myphoneandi.database.ScreenEventDatabase
+import millich.michael.myphoneandi.database.ScreenEventDatabaseDAO
 
 
 @Module
 @InstallIn(ViewModelComponent::class)
 object DatabaseModule {
     @Provides
-    fun provideUnlockDatabaseDAO(application: Application): UnlockDatabaseDAO {
-        return UnlockDatabase.getInstance(application).unlockDatabaseDAO
+    fun provideUnlockDatabaseDAO(application: Application): ScreenEventDatabaseDAO {
+        return ScreenEventDatabase.getInstance(application).screenEventDatabaseDAO
     }
 }

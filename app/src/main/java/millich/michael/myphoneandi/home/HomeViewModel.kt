@@ -1,11 +1,10 @@
 package millich.michael.myphoneandi.home
 
-import android.util.Log
 import androidx.lifecycle.*
 
 import dagger.hilt.android.lifecycle.HiltViewModel
-import millich.michael.myphoneandi.database.UnlockDatabaseDAO
-import millich.michael.myphoneandi.database.UnlockEvent
+import millich.michael.myphoneandi.database.ScreenEventDatabaseDAO
+import millich.michael.myphoneandi.database.ScreenEvent
 import millich.michael.myphoneandi.utils.MLog
 import millich.michael.myphoneandi.utils.formatDateFromMillisecondsLong
 import millich.michael.myphoneandi.utils.formatSimpleDate
@@ -22,7 +21,7 @@ import javax.inject.Inject
  */
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(val database: UnlockDatabaseDAO) : ViewModel() {
+class HomeViewModel @Inject constructor(val database: ScreenEventDatabaseDAO) : ViewModel() {
     companion object{
         val TAG = "HomeViewModel"
     }
@@ -46,10 +45,10 @@ class HomeViewModel @Inject constructor(val database: UnlockDatabaseDAO) : ViewM
     // Keeping the last unlock in the memory of the application. might be useful.
     // I also show when we had the last unlock in lastunlockTime.
     private val _lastUnlock = database.getLastUnlockLiveData()
-    val lastUnlockTime : LiveData<String> = _lastUnlock.map { user ->
-        formatDateFromMillisecondsLong(
-            user.eventTime
-        )
+    val lastUnlockTime : LiveData<String?> = _lastUnlock.map { user ->
+        user?.let {
+            formatDateFromMillisecondsLong(it.eventTime)
+        }
     }
     val dateText : MutableLiveData<String> = MutableLiveData<String>(formatSimpleDate())
     val dateTextWords : MutableLiveData<String> = MutableLiveData<String>(formatTimeWords())
@@ -57,7 +56,7 @@ class HomeViewModel @Inject constructor(val database: UnlockDatabaseDAO) : ViewM
     //The unlockevent list to be provided to the clockView - changes if we are after 12 AM
     private var _unlockEvents12H= _unlockEvents12HRefresh()
 
-    val unlockEvents12H : LiveData<List<UnlockEvent>>
+    val unlockEvents12H : LiveData<List<ScreenEvent>>
         get() {
             return  _unlockEvents12H
         }
@@ -78,12 +77,12 @@ class HomeViewModel @Inject constructor(val database: UnlockDatabaseDAO) : ViewM
     fun refresh(){
         _unlockEvents12H=_unlockEvents12HRefresh()
     }
-    fun _unlockEvents12HRefresh() : LiveData<List<UnlockEvent>>{
+    fun _unlockEvents12HRefresh() : LiveData<List<ScreenEvent>>{
         return if (isAfter12Am()){
             database.getAllUnlcoksFromTime(getToday12AmInMilli())
         }
             else  {
-            database.getAllUnlocksBetweenTwoTimes(getCurrentDateInMilli(), getToday12AmInMilli())
+            database.getAllScreenEventsBetweenTwoTimes(getCurrentDateInMilli(), getToday12AmInMilli())
         }
     }
     fun printValues(){

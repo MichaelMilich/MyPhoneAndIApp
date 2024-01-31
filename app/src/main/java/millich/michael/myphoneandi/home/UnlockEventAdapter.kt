@@ -5,10 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import millich.michael.myphoneandi.database.UnlockEvent
+import millich.michael.myphoneandi.database.ScreenEvent
 import millich.michael.myphoneandi.databinding.ListItemUnlockEventBinding
 
-class UnlockEventAdapter : ListAdapter<UnlockEvent, UnlockEventAdapter.ViewHolder>(UnlockEventDiffCallback()) {
+class UnlockEventAdapter : ListAdapter<ScreenEvent, UnlockEventAdapter.ViewHolder>(UnlockEventDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return  ViewHolder.from(parent)
     }
@@ -21,7 +21,7 @@ class UnlockEventAdapter : ListAdapter<UnlockEvent, UnlockEventAdapter.ViewHolde
 
 
     class ViewHolder(val binding: ListItemUnlockEventBinding) : RecyclerView.ViewHolder(binding.root){
-        fun bind (item: UnlockEvent){
+        fun bind (item: ScreenEvent){
             binding.unlockEvent =item
             binding.executePendingBindings()
         }
@@ -37,12 +37,12 @@ class UnlockEventAdapter : ListAdapter<UnlockEvent, UnlockEventAdapter.ViewHolde
 
 }
 
-class UnlockEventDiffCallback: DiffUtil.ItemCallback<UnlockEvent>(){
-    override fun areItemsTheSame(oldItem: UnlockEvent, newItem: UnlockEvent): Boolean {
+class UnlockEventDiffCallback: DiffUtil.ItemCallback<ScreenEvent>(){
+    override fun areItemsTheSame(oldItem: ScreenEvent, newItem: ScreenEvent): Boolean {
         return oldItem.eventId == newItem.eventId
     }
 
-    override fun areContentsTheSame(oldItem: UnlockEvent, newItem: UnlockEvent): Boolean {
+    override fun areContentsTheSame(oldItem: ScreenEvent, newItem: ScreenEvent): Boolean {
         return oldItem == newItem
     }
 
