@@ -1,6 +1,5 @@
 package millich.michael.myphoneandi.settings
 
-import android.app.NotificationManager
 import android.content.*
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -8,12 +7,14 @@ import android.provider.Settings
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import dagger.hilt.android.AndroidEntryPoint
 import android.Manifest
-import android.util.Log
+import android.net.Uri
+import android.os.Build
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import millich.michael.myphoneandi.R
 import millich.michael.myphoneandi.utils.START_MY_SERVICE
 import millich.michael.myphoneandi.utils.STOP_MY_SERVICE
@@ -39,10 +40,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
     val listener: SharedPreferences.OnSharedPreferenceChangeListener =
         SharedPreferences.OnSharedPreferenceChangeListener{
                 sharedPreferences, key -> kotlin.run {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                if (key == resources.getString(R.string.show_notification_key))
+                    onShowNotificationClicked(sharedPreferences,key)
+            }
             when(key) {
                 resources.getString(R.string.background_service_run) -> onServicePreferenceClicked(sharedPreferences,key) // if we are talking about service setting deal with it in the function
                 resources.getString(R.string.background_service_run_battery_optimization) -> onBatteryOptimizationPreferenceClicked(sharedPreferences,key) // if we are talking about battery setting deal with it in the function
-                resources.getString(R.string.show_notification_key) -> onShowNotificationClicked(sharedPreferences,key)
             }
         } }
 
@@ -55,8 +59,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         // check if permission is given for the battery optimization and set it in the start of the fragment
         val batteryPref  = findPreference<SwitchPreferenceCompat>(resources.getString(R.string.background_service_run_battery_optimization))
-        val actualValue = viewModel.isIgnoringBatteryOptimizationsGiven.value!!
-        batteryPref!!.isChecked =actualValue
+        val batteryPrefActualValue = viewModel.isIgnoringBatteryOptimizationsGiven.value ?: false
+        batteryPref?.isChecked =batteryPrefActualValue
+
+        val notificationPref = findPreference<SwitchPreferenceCompat>(resources.getString(R.string.show_notification_key))
+        val notifPrefActualValue = viewModel.isNotificationPermissionGiven.value ?: false
+        notificationPref?.isChecked =notifPrefActualValue
     }
 
     /**
@@ -81,9 +89,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
      */
     private val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
         val batteryPref  = findPreference<SwitchPreferenceCompat>(resources.getString(R.string.background_service_run_battery_optimization))
-        val actualValue = viewModel.isIgnoringBatteryOptimizationsGiven.value!!
-        batteryPref!!.isChecked =actualValue
-        viewModel.writeBatteryOptimizationPref(resources.getString(R.string.background_service_run_battery_optimization),actualValue)
+        val batteryPrefActualValue = viewModel.isIgnoringBatteryOptimizationsGiven.value ?: false
+        batteryPref?.isChecked =batteryPrefActualValue
+        viewModel.writeBooleanPref(resources.getString(R.string.background_service_run_battery_optimization),batteryPrefActualValue)
     }
 
     /**
@@ -133,36 +141,43 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     /**
-     * THIS is not done
-     * //TODO: make normal functionality, as stated below
-     * 1) check permission, set the value to be as the permission says
-     * 2) changing: if we allow - we only ask permission
-     * 2.1) if we disallow we will need to send the user to the settings via intent.
+     * This function is for API 33 and above.
+     * Checks if the notification permission is given and compares it to what the app thinks about it.
+     * The viewModel checks if the system permits the notifications and compares it to what the application think.
+     * If the user wants to disable the notifications - sends the user to the page
+     * Otherwise, asks for the permissions.
      */
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun onShowNotificationClicked(sharedPreferences : SharedPreferences, key: String) {
         val value = sharedPreferences.getBoolean(key, false)
-        MLog.i(TAG,"asking notification")
-        activity?.let { activity ->
-            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                // Request permission
-                requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), REQUEST_CODE_POST_NOTIFICATIONS)
-            } else {
-                // Permission already granted, show some message or take action
-                MLog.i(TAG,"CAN Show Notification")
-
-            }
+        var actualValue = viewModel.isNotificationPermissionGiven.value ?:false
+        if (actualValue && !value){
+            MLog.i(TAG,"user wants to delete the notification permissions")
+            Toast.makeText(requireContext(),"The app can't disable this by itself, sending you to appropriate page to disable ",Toast.LENGTH_LONG).show()
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            val uri = Uri.fromParts("package", requireContext().packageName,null)
+            intent.setData(uri)
+            startActivity(intent)
+            actualValue = viewModel.isNotificationPermissionGiven.value ?:false
+            viewModel.writeBooleanPref(resources.getString(R.string.show_notification_key), actualValue)
         }
-
+        if (!actualValue && value) {
+            MLog.i(TAG,"user wants to give the notification permissions")
+            // Request permission
+            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), REQUEST_CODE_POST_NOTIFICATIONS)
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (requestCode == REQUEST_CODE_POST_NOTIFICATIONS) {
+            val actualValue = viewModel.isNotificationPermissionGiven.value ?:false
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 // Permission was granted, show some message or take action
-
+                viewModel.writeBooleanPref(resources.getString(R.string.show_notification_key), actualValue)
                 MLog.i(TAG,"CAN Show Notification")
             } else {
                 // Permission denied, show some message to the user
+                viewModel.writeBooleanPref(resources.getString(R.string.show_notification_key), actualValue)
                 MLog.i(TAG,"CAN NOT Show Notification")
             }
         }
