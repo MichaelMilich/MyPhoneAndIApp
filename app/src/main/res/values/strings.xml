@@ -58,5 +58,6 @@
     <string name="background_service_notification_summaryOn">The service is able to send notification, you will be able to see each notification even while the app is close and the service is running</string>
     <string name="background_service_notification_summaryOff">There will be no visual indication if the service is running in the background while the app is closed, the service might be running and it might not</string>
     <string name="background_service_notification_title">Let the service show notifications</string>
+    <string name="throw_exception">throw exception</string>
 
 </resources>

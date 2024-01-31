@@ -2,16 +2,14 @@ package millich.michael.myphoneandi.background
 
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import millich.michael.myphoneandi.*
+import millich.michael.myphoneandi.MainActivity
+import millich.michael.myphoneandi.R
 import millich.michael.myphoneandi.database.UnlockDatabase
 import millich.michael.myphoneandi.database.UnlockEvent
 import millich.michael.myphoneandi.utils.CHANNEL_ID_1
@@ -22,10 +20,10 @@ import millich.michael.myphoneandi.utils.formatDateFromMillisecondsLong
 import millich.michael.myphoneandi.utils.getCurrentDateInMilli
 
 
-object UnlockBroadcastReceiver : BroadcastReceiver() {
+object UnlockBroadcastReceiver : BasicBroadcastRecevier() {
 
-    val TAG = "UnlockBroadcastReceiver"
-    override fun onReceive(context: Context, intent: Intent) {
+    override val TAG = "UnlockBroadcastReceiver"
+    override fun onRecieveCallback(context: Context, intent: Intent) {
         val database = UnlockDatabase.getInstance(context).unlockDatabaseDAO
         val unlockEvent = UnlockEvent()
         CoroutineScope(Dispatchers.IO).launch {
@@ -37,9 +35,8 @@ object UnlockBroadcastReceiver : BroadcastReceiver() {
             MLog.d(TAG, "updating notification : '$unlockCount  unlocks today' ")
             showNotification(context," $unlockCount  unlocks today" ,"last time at ${formatDateFromMillisecondsLong(newUnlock!!.eventTime)}")
         }
-
-
     }
+
     private fun showNotification(context: Context, title: String, message: String) {
         val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val intent = Intent(context, MainActivity::class.java)

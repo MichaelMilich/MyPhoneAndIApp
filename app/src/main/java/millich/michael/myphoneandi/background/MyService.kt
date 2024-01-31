@@ -9,18 +9,18 @@ import android.content.pm.ServiceInfo
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import millich.michael.myphoneandi.*
+import millich.michael.myphoneandi.MainActivity
+import millich.michael.myphoneandi.R
 import millich.michael.myphoneandi.database.UnlockDatabase
 import millich.michael.myphoneandi.database.UnlockDatabaseDAO
 import millich.michael.myphoneandi.utils.CHANNEL_ID_1
+import millich.michael.myphoneandi.utils.CustomExceptionHandler
 import millich.michael.myphoneandi.utils.MLog
 import millich.michael.myphoneandi.utils.ONGOING_NOTIFICATION_ID
 import millich.michael.myphoneandi.utils.STOP_MY_SERVICE
@@ -50,6 +50,8 @@ class MyService: Service()  {
      */
     override fun onCreate() {
         super.onCreate()
+        Thread.setDefaultUncaughtExceptionHandler(CustomExceptionHandler()) // setting up the custom exception handler for the Mlog
+        // this is a new thread that might be different from the applications thread, so make sure we log it as well.
         MLog.i(TAG, "inside myservice on create")
         val application = requireNotNull(this).application
         database = UnlockDatabase.getInstance(application).unlockDatabaseDAO
@@ -76,10 +78,6 @@ class MyService: Service()  {
             val unlockCount =database.getTodayUnlocksCountAfterTimeNoLiveData(getCurrentDateInMilli())
             showNotificationAndStartForeground(" $unlockCount  unlocks today" , "")
         }
-//        runBlocking { launch {
-//            val unlockCount =database.getTodayUnlocksCountAfterTimeNoLiveData(getCurrentDateInMilli())
-//            showNotificationAndStartForeground(" $unlockCount  unlocks today" , "")
-//        } }
         MLog.i(TAG, "inside MyService onStartCommand")
         registerReceiver(UnlockBroadcastReceiver, IntentFilter(Intent.ACTION_USER_PRESENT))
         isServiceRunning=true
