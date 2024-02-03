@@ -13,7 +13,7 @@ import androidx.room.RoomDatabase
  * so you can reuse it.
  * I AM :)
  */
-@Database(entities = [ScreenEvent::class], version = 1, exportSchema = false)
+@Database(entities = [ScreenEvent::class], version = 2, exportSchema = false)
 abstract class ScreenEventDatabase : RoomDatabase() {
     /**
      * Connects the database to the DAO.

@@ -11,6 +11,7 @@ import millich.michael.myphoneandi.utils.formatSimpleDate
 import millich.michael.myphoneandi.utils.formatTimeWords
 import millich.michael.myphoneandi.utils.getCurrentDateInMilli
 import millich.michael.myphoneandi.utils.getToday12AmInMilli
+import millich.michael.myphoneandi.utils.setScreenEventId
 import java.util.*
 import javax.inject.Inject
 
@@ -93,6 +94,7 @@ class HomeViewModel @Inject constructor(val database: ScreenEventDatabaseDAO) : 
             }
         }
     }
+
 
 
 }

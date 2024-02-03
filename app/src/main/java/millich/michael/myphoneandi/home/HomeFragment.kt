@@ -17,6 +17,7 @@ import millich.michael.myphoneandi.utils.afterMeasured
 import millich.michael.myphoneandi.database.ScreenEvent
 import millich.michael.myphoneandi.databinding.FragmentHomeBinding
 import millich.michael.myphoneandi.utils.MLog
+import millich.michael.myphoneandi.utils.setScreenEventId
 
 /**
  * Currently the main fragment in use in the application.
@@ -60,10 +61,7 @@ class HomeFragment : Fragment() {
                 if(it.isNotEmpty()) {
                     //The id should start from 1, that is why we change the eventid for the given list.
                     //The given list is always read from the database so we dont get id of -1
-                    val firstId = it[it.size - 1].eventId - 1
-                    for (event in it)
-                        event.eventId -= firstId
-
+                    setScreenEventId(it)
                     adapter.submitList(it)
                 }
             }

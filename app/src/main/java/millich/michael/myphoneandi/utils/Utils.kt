@@ -15,6 +15,8 @@ package millich.michael.myphoneandi.utils
 
 import android.view.View
 import android.view.ViewTreeObserver
+import androidx.lifecycle.LiveData
+import millich.michael.myphoneandi.database.ScreenEvent
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -40,6 +42,17 @@ fun formatDateFromMillisecondsLong( long: Long) :String
     val date = Date(long)
     return simpleDateFormat.format(date)
 }
+
+fun formatDuration(milliseconds: Long): String {
+    val seconds = milliseconds / 1000
+    val hours = seconds / 3600
+    val minutes = (seconds % 3600) / 60
+//    val secs = seconds % 60
+
+    return "$hours Hours,$minutes Minutes "
+}
+
+
 fun formatSimpleDate() :String
 {
     val calendar = Calendar.getInstance()
@@ -145,3 +158,10 @@ inline fun View.afterMeasured(crossinline f: View.() -> Unit) {
         }
     }
 }*/
+
+fun setScreenEventId(screenEvents: List<ScreenEvent>){
+    MLog.i("ScreenOff", " calling setScreenEventId on $screenEvents")
+    for (index : Int in screenEvents.indices){
+        screenEvents[index].eventId = (screenEvents.size -index).toLong()
+    }
+}

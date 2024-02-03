@@ -16,9 +16,14 @@ object ScreenOffReceiver : BasicBroadcastRecevier() {
     override fun onRecieveCallback(context: Context, intent: Intent) {
         MLog.d(TAG, "got msg ")
         val database = ScreenEventDatabase.getInstance(context).screenEventDatabaseDAO
-        val unlockEvent = ScreenEvent(eventType = ScreenEventType.ScreenOff.value)
+        val screenOffEvent = ScreenEvent(eventType = ScreenEventType.ScreenOff.value)
         CoroutineScope(Dispatchers.IO).launch {
-            database.Insert(unlockEvent)
+            val lastScreenEvent = database.getLastScreenEvent() ?: return@launch
+            if (lastScreenEvent.eventType == ScreenEventType.ScreenOff.value)
+                return@launch
+
+            MLog.i(TAG,"new screen off after user active, saving to database $screenOffEvent")
+            database.Insert(screenOffEvent)
             val screenOffCount =database.getTodayScreenEventCountAfterTimeNoLiveData(
                 getCurrentDateInMilli(),
                 eventType = ScreenEventType.ScreenOff.value

@@ -51,6 +51,12 @@ interface ScreenEventDatabaseDAO {
     @Query("SELECT * FROM screen_event_table WHERE event_type = :eventType ORDER BY eventId DESC LIMIT 1")
     suspend fun getLastUnlock(eventType: String = ScreenEventType.ScreenOn.value): ScreenEvent?
 
+    /**
+     * Selects and returns the latest screen event (unlock or screen off) event.
+     */
+    @Query("SELECT * FROM screen_event_table ORDER BY eventId DESC LIMIT 1")
+    suspend fun getLastScreenEvent(): ScreenEvent?
+
     @Query("SELECT * FROM screen_event_table WHERE event_type = :eventType ORDER BY eventId DESC LIMIT 1")
     fun getLastUnlockLiveData(eventType: String = ScreenEventType.ScreenOn.value): LiveData<ScreenEvent?>
 
@@ -83,5 +89,11 @@ interface ScreenEventDatabaseDAO {
 
     @Query("SELECT * FROM screen_event_table WHERE event_type = :eventType AND event_time_milli BETWEEN :start AND :end ORDER BY eventId DESC ")
      fun getAllScreenEventsBetweenTwoTimes(start : Long, end : Long, eventType: String = ScreenEventType.ScreenOn.value) : LiveData<List<ScreenEvent>>
+
+    @Query("SELECT event_time_milli FROM screen_event_table WHERE event_time_milli > :time AND event_type = :eventType ORDER BY event_time_milli ASC LIMIT 1")
+    fun getTimeOfFirstUnlockFromTime(time: Long, eventType: String = ScreenEventType.ScreenOn.value): Long?
+
+    @Query("SELECT SUM(event_time_milli) FROM screen_event_table WHERE event_time_milli > :time AND event_type = :eventType")
+    fun getSumOfTimestampsFromTime(time: Long, eventType: String = ScreenEventType.ScreenOn.value) : Long?
 
 }
