@@ -1,24 +1,24 @@
 package millich.michael.myphoneandi.settings
 
+import android.Manifest
 import android.content.*
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import dagger.hilt.android.AndroidEntryPoint
-import android.Manifest
-import android.net.Uri
-import android.os.Build
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import millich.michael.myphoneandi.R
-import millich.michael.myphoneandi.utils.START_MY_SERVICE
-import millich.michael.myphoneandi.utils.STOP_MY_SERVICE
 import millich.michael.myphoneandi.background.MyService
 import millich.michael.myphoneandi.utils.MLog
+import millich.michael.myphoneandi.utils.START_MY_SERVICE
+import millich.michael.myphoneandi.utils.STOP_MY_SERVICE
 
 /**
  * The settings fragment. currently has only 2 settings:

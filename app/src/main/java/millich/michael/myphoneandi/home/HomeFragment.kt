@@ -1,9 +1,14 @@
 package millich.michael.myphoneandi.home
 
 import android.os.Bundle
-import android.view.*
-import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
@@ -13,10 +18,10 @@ import androidx.preference.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import millich.michael.myphoneandi.R
-import millich.michael.myphoneandi.utils.afterMeasured
 import millich.michael.myphoneandi.database.ScreenEvent
 import millich.michael.myphoneandi.databinding.FragmentHomeBinding
 import millich.michael.myphoneandi.utils.MLog
+import millich.michael.myphoneandi.utils.afterMeasured
 import millich.michael.myphoneandi.utils.setScreenEventId
 
 /**

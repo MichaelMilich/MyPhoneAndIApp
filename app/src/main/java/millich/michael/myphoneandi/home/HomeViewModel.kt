@@ -1,18 +1,19 @@
 package millich.michael.myphoneandi.home
 
-import androidx.lifecycle.*
-
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import dagger.hilt.android.lifecycle.HiltViewModel
-import millich.michael.myphoneandi.database.ScreenEventDatabaseDAO
 import millich.michael.myphoneandi.database.ScreenEvent
+import millich.michael.myphoneandi.database.ScreenEventDatabaseDAO
 import millich.michael.myphoneandi.utils.MLog
 import millich.michael.myphoneandi.utils.formatDateFromMillisecondsLong
 import millich.michael.myphoneandi.utils.formatSimpleDate
 import millich.michael.myphoneandi.utils.formatTimeWords
 import millich.michael.myphoneandi.utils.getCurrentDateInMilli
 import millich.michael.myphoneandi.utils.getToday12AmInMilli
-import millich.michael.myphoneandi.utils.setScreenEventId
-import java.util.*
+import java.util.Calendar
 import javax.inject.Inject
 
 /**

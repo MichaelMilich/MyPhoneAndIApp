@@ -1,23 +1,21 @@
 package millich.michael.myphoneandi.background
 
 
-import android.Manifest
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.app.usage.UsageEvents
+import android.app.usage.UsageEvents.Event
 import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
-import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,6 +34,7 @@ import millich.michael.myphoneandi.utils.SERVICE_START_NOTIFICATION_LOOP
 import millich.michael.myphoneandi.utils.SERVICE_STOP_NOTIFICATION_LOOP
 import millich.michael.myphoneandi.utils.STOP_MY_SERVICE
 import millich.michael.myphoneandi.utils.calculateTodayPhoneTime
+import millich.michael.myphoneandi.utils.eventTypeToString
 import millich.michael.myphoneandi.utils.formatDateFromMillisecondsLong
 import millich.michael.myphoneandi.utils.getCurrentDateInMilli
 import millich.michael.myphoneandi.utils.hasUsageStatsPermission
@@ -212,27 +211,18 @@ class MyService: Service()  {
         if (usageStatsManager == null)
             usageStatsManager = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
 
-        if (hasUsageStatsPermission(applicationContext)) {
+        if (!hasUsageStatsPermission(applicationContext)) {
             MLog.w(TAG,"[usage stats] permission not granted not collecting info")
             return
         }
-//        MLog.i(TAG,"[usage stats] permission  granted  collecting info")
-//        val usageStatsList = usageStatsManager?.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, startTime, stopTime)
-//        MLog.d(TAG,"[usage stats] between ${formatDateFromMillisecondsLong(startTime)} and ${formatDateFromMillisecondsLong(stopTime)}")
-//        MLog.d(TAG, "is usageStatsList null ? = ${usageStatsList==null}")
-//        MLog.d(TAG, "what is usageStatsList  = $usageStatsList")
-//        usageStatsList?.forEach { usageStat ->
-//            MLog.d(TAG,"[usage stats] Package name: ${usageStat.packageName}")
-//            MLog.d(TAG,"[usage stats] Total time in foreground: ${usageStat.totalTimeInForeground}")
-//        }
         MLog.i(TAG,"[usage stats] permission  granted  collecting info")
         val events = usageStatsManager?.queryEvents(startTime, stopTime)
         MLog.i(TAG,"[usage stats] what is events  = $events")
-        MLog.i(TAG,"[usage stats] is ebvents null?  = ${events==null}")
-        val event = UsageEvents.Event()
+        MLog.i(TAG,"[usage stats] is events null?  = ${events==null}")
+        val event = Event()
         while (events?.hasNextEvent() ==true) {
             events.getNextEvent(event)
-            MLog.i(TAG,"[usage stats] event package = ${event.packageName} at timestamp = ${event.timeStamp} , event type = ${event.eventType}")
+            MLog.i(TAG,"[usage stats] event package = ${event.packageName} at  ${formatDateFromMillisecondsLong(event.timeStamp)} , event type = ${event.eventTypeToString()}")
             // Analyze the event
         }
     }

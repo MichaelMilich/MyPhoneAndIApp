@@ -1,6 +1,7 @@
 package millich.michael.myphoneandi.utils
 
 import android.app.AppOpsManager
+import android.app.usage.UsageEvents
 import android.content.Context
 import millich.michael.myphoneandi.database.ScreenEventDatabaseDAO
 import millich.michael.myphoneandi.database.ScreenEventType
@@ -37,5 +38,28 @@ fun hasUsageStatsPermission(context: Context): Boolean {
     MLog.d("Usage_Stats", "usage stats permissions = $mode")
     MLog.d("Usage_Stats", "is permission granted? = ${mode == AppOpsManager.MODE_ALLOWED}")
     return mode == AppOpsManager.MODE_ALLOWED
+}
+
+fun UsageEvents.Event.eventTypeToString(): String {
+    return when (this.eventType) {
+        UsageEvents.Event.ACTIVITY_PAUSED -> "ACTIVITY_PAUSED"
+        UsageEvents.Event.ACTIVITY_RESUMED -> "ACTIVITY_RESUMED"
+        UsageEvents.Event.ACTIVITY_STOPPED -> "ACTIVITY_STOPPED"
+        UsageEvents.Event.CONFIGURATION_CHANGE -> "CONFIGURATION_CHANGE"
+        UsageEvents.Event.DEVICE_SHUTDOWN -> "DEVICE_SHUTDOWN"
+        UsageEvents.Event.DEVICE_STARTUP -> "DEVICE_STARTUP"
+        UsageEvents.Event.FOREGROUND_SERVICE_START -> "FOREGROUND_SERVICE_START"
+        UsageEvents.Event.FOREGROUND_SERVICE_STOP -> "FOREGROUND_SERVICE_STOP"
+        UsageEvents.Event.KEYGUARD_HIDDEN -> "KEYGUARD_HIDDEN"
+        UsageEvents.Event.KEYGUARD_SHOWN -> "KEYGUARD_SHOWN"
+        UsageEvents.Event.NONE -> "NONE"
+        UsageEvents.Event.SCREEN_INTERACTIVE -> "SCREEN_INTERACTIVE"
+        UsageEvents.Event.SCREEN_NON_INTERACTIVE -> "SCREEN_NON_INTERACTIVE"
+        UsageEvents.Event.SHORTCUT_INVOCATION -> "SHORTCUT_INVOCATION"
+        UsageEvents.Event.STANDBY_BUCKET_CHANGED -> "STANDBY_BUCKET_CHANGED"
+        UsageEvents.Event.USER_INTERACTION -> "USER_INTERACTION"
+        // Add other event types here
+        else -> "UNKNOWN_EVENT_TYPE"
+    }
 }
 
