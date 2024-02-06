@@ -1,5 +1,7 @@
 package millich.michael.myphoneandi.utils
 
+import android.app.AppOpsManager
+import android.content.Context
 import millich.michael.myphoneandi.database.ScreenEventDatabaseDAO
 import millich.michael.myphoneandi.database.ScreenEventType
 
@@ -11,9 +13,9 @@ import millich.michael.myphoneandi.database.ScreenEventType
  * For that we need to find the time of the first screenOn and calculate from there.
  * This is because sometimes when installing the app a screenOff will happen before ScreenOn.
  */
-fun calculateTodayPhoneTime(database: ScreenEventDatabaseDAO, tag: String) : String{
+fun calculateTodayPhoneTime(database: ScreenEventDatabaseDAO,firstCallTime : Long, tag: String) : String{
     val firstScreenOnTimeForToday = database.getTimeOfFirstUnlockFromTime(getCurrentDateInMilli())
-    val screenOnTimestampSum = database.getSumOfTimestampsFromTime(getCurrentDateInMilli(), ScreenEventType.ScreenOn.value)?: System.currentTimeMillis()
+    val screenOnTimestampSum = database.getSumOfTimestampsFromTime(getCurrentDateInMilli(), ScreenEventType.ScreenOn.value)?: firstCallTime
 
     val screenOffTimestampSum = firstScreenOnTimeForToday?.let {
         database.getSumOfTimestampsFromTime(
@@ -27,3 +29,11 @@ fun calculateTodayPhoneTime(database: ScreenEventDatabaseDAO, tag: String) : Str
 //    MLog.d(tag, "time spent on phone in milliseconds = $timeSpentMilliseconds")
     return formatDuration(timeSpentMilliseconds)
 }
+
+fun hasUsageStatsPermission(context: Context): Boolean {
+    val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+    val mode = appOps.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+        android.os.Process.myUid(), context.packageName)
+    return mode == AppOpsManager.MODE_ALLOWED
+}
+

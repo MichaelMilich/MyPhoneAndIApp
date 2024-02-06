@@ -1,18 +1,22 @@
 package millich.michael.myphoneandi.background
 
 
+import android.Manifest
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
+import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +35,9 @@ import millich.michael.myphoneandi.utils.SERVICE_START_NOTIFICATION_LOOP
 import millich.michael.myphoneandi.utils.SERVICE_STOP_NOTIFICATION_LOOP
 import millich.michael.myphoneandi.utils.STOP_MY_SERVICE
 import millich.michael.myphoneandi.utils.calculateTodayPhoneTime
+import millich.michael.myphoneandi.utils.formatDateFromMillisecondsLong
 import millich.michael.myphoneandi.utils.getCurrentDateInMilli
+import millich.michael.myphoneandi.utils.hasUsageStatsPermission
 
 /**
  * The service that runs with the application.
@@ -51,8 +57,9 @@ class MyService: Service()  {
 
     private val binder = LocalBinder()
     lateinit var database: ScreenEventDatabaseDAO
-    var notificationJob : Job? =null
-    var isServiceRunning =false // if the service is already running, don't create another broadcast receiver and don't show new notifications
+    private var notificationJob : Job? =null
+    private var isServiceRunning =false // if the service is already running, don't create another broadcast receiver and don't show new notifications
+    private  var usageStatsManager :UsageStatsManager? =null
 
 
     /**
@@ -93,8 +100,9 @@ class MyService: Service()  {
         }
         CoroutineScope(Dispatchers.IO).launch {
             val unlockCount =database.getTodayScreenEventCountAfterTimeNoLiveData(getCurrentDateInMilli())
-            val timeToday = calculateTodayPhoneTime(database, TAG)
+            val timeToday = calculateTodayPhoneTime(database, System.currentTimeMillis(),TAG)
             showNotificationAndStartForeground("$timeToday on the phone today " , "$unlockCount  unlocks today")
+            notificationLoop(false)
         }
         MLog.i(TAG, "inside MyService onStartCommand")
         registerReceiver(UnlockBroadcastReceiver, IntentFilter(Intent.ACTION_USER_PRESENT))
@@ -115,14 +123,18 @@ class MyService: Service()  {
             notificationJob?.cancel()
         else if (!shouldStop){
             notificationJob = CoroutineScope(Dispatchers.IO).launch {
+                val firstCallTime = System.currentTimeMillis()
                 while (true){
+                    val timestampStart = System.currentTimeMillis()
                     delay(1000*60) // delay for a whole minute
+                    val timestampStop = System.currentTimeMillis()
                     val unlockCount =database.getTodayScreenEventCountAfterTimeNoLiveData(getCurrentDateInMilli())
-                    val timeToday = calculateTodayPhoneTime(database, TAG)
+                    val timeToday = calculateTodayPhoneTime(database,firstCallTime, TAG)
                     val title = "$timeToday on the phone today "
                     val message = "$unlockCount  unlocks today"
                     MLog.d(TAG, "[notificationLoop] updating the notification with title ='$title', message = '$message'")
                     showNotification(title , message)
+                    logUserActivity(timestampStart,timestampStop)
                 }
             }
         }
@@ -130,7 +142,7 @@ class MyService: Service()  {
 
     /**
      * Clean the service and destroy
-     * Dont froget to unregister reciver.
+     * Don't forget to unregister receiver.
      */
     override fun onDestroy() {
         isServiceRunning=false
@@ -193,6 +205,23 @@ class MyService: Service()  {
             .setOngoing(true)
             .build()
         mNotificationManager.notify(ONGOING_NOTIFICATION_ID, notification)
+    }
+
+    private fun logUserActivity(startTime : Long , stopTime :Long){
+        if (usageStatsManager == null)
+            usageStatsManager = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+
+//        if (hasUsageStatsPermission(applicationContext)) {
+//            MLog.w(TAG,"[usage stats] permission not granted not collecting info")
+//            return
+//        }
+//        MLog.i(TAG,"[usage stats] permission  granted  collecting info")
+        val usageStatsList = usageStatsManager?.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, startTime, stopTime)
+        MLog.d(TAG,"[usage stats] between ${formatDateFromMillisecondsLong(startTime)} and ${formatDateFromMillisecondsLong(stopTime)}")
+        usageStatsList?.forEach { usageStat ->
+            MLog.d(TAG,"[usage stats] Package name: ${usageStat.packageName}")
+            MLog.d(TAG,"[usage stats] Total time in foreground: ${usageStat.totalTimeInForeground}")
+        }
     }
 
 

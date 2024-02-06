@@ -23,4 +23,12 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="phone info">
+        <SwitchPreferenceCompat
+            app:key="@string/usage_stats_permissions_key"
+            app:summaryOff="@string/usage_status_permiision_off_summary"
+            app:summaryOn="@string/usage_Status_permissions_on_summary"
+            app:title="@string/usage_status_permissions_tittle" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

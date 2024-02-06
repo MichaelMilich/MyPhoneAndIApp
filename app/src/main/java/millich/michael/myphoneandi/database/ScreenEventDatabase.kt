@@ -70,7 +70,7 @@ abstract class ScreenEventDatabase : RoomDatabase() {
                     instance = Room.databaseBuilder(
                         context.applicationContext,
                         ScreenEventDatabase::class.java,
-                        "unlock_event_table"
+                        "screen_event_table"
                     )
                         // Wipes and rebuilds instead of migrating if no Migration object.
                         // Migration is not part of this lesson. You can learn more about

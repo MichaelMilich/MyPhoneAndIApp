@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
@@ -47,6 +46,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             when(key) {
                 resources.getString(R.string.background_service_run) -> onServicePreferenceClicked(sharedPreferences,key) // if we are talking about service setting deal with it in the function
                 resources.getString(R.string.background_service_run_battery_optimization) -> onBatteryOptimizationPreferenceClicked(sharedPreferences,key) // if we are talking about battery setting deal with it in the function
+                resources.getString(R.string.usage_stats_permissions_key) -> onUsageStatsPreferenceClicked(sharedPreferences,key)
             }
         } }
 
@@ -65,6 +65,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val notificationPref = findPreference<SwitchPreferenceCompat>(resources.getString(R.string.show_notification_key))
         val notifPrefActualValue = viewModel.isNotificationPermissionGiven.value ?: false
         notificationPref?.isChecked =notifPrefActualValue
+
+        val userStatsPref = findPreference<SwitchPreferenceCompat>(resources.getString(R.string.usage_stats_permissions_key))
+        val userStatsPrefActualValue = viewModel.isUsageStatsPermissionGiven.value ?: false
+        userStatsPref?.isChecked =userStatsPrefActualValue
     }
 
     /**
@@ -165,6 +169,21 @@ class SettingsFragment : PreferenceFragmentCompat() {
             MLog.i(TAG,"user wants to give the notification permissions")
             // Request permission
             requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), REQUEST_CODE_POST_NOTIFICATIONS)
+        }
+    }
+
+    private fun onUsageStatsPreferenceClicked(sharedPreferences : SharedPreferences, key: String){
+        val value = sharedPreferences.getBoolean(key, false)
+        var actualValue = viewModel. isUsageStatsPermissionGiven.value ?:false
+        if (actualValue != value){
+            MLog.i(TAG,"user wants to change the usage status permissions")
+            Toast.makeText(requireContext(),"The app can't change this permission itself, sending you to the relevant page ",Toast.LENGTH_LONG).show()
+            val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
+            val uri = Uri.fromParts("package", requireContext().packageName,null)
+            intent.setData(uri)
+            startActivity(intent)
+            actualValue = viewModel.isUsageStatsPermissionGiven.value ?:false
+            viewModel.writeBooleanPref(resources.getString(R.string.usage_stats_permissions_key), actualValue)
         }
     }
 

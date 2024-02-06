@@ -36,7 +36,7 @@ object UnlockBroadcastReceiver : BasicBroadcastRecevier() {
         CoroutineScope(Dispatchers.IO).launch {
             database.Insert(unlockEvent)
 
-            val timeToday = calculateTodayPhoneTime(database, TAG)
+            val timeToday = calculateTodayPhoneTime(database,System.currentTimeMillis(), TAG)
             val newUnlockTime = database.getLastUnlock()?.eventTime ?: System.currentTimeMillis()
             val unlockCount = database.getTodayScreenEventCountAfterTimeNoLiveData(getCurrentDateInMilli())
             MLog.d(TAG, "updating notification : 'phone time today = $timeToday' ")

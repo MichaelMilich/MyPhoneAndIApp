@@ -9,6 +9,7 @@ import android.os.PowerManager
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
 import androidx.preference.PreferenceManager
+import millich.michael.myphoneandi.utils.hasUsageStatsPermission
 
 class SettingsViewModel(application: Application): AndroidViewModel(application) {
     companion object{
@@ -34,6 +35,13 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
             _isNotificationPermissionGiven.value =
                 permissionStatus == PackageManager.PERMISSION_GRANTED
             return _isNotificationPermissionGiven
+        }
+    private var _isUsageStatsPermissionGiven = MutableLiveData(false)
+    val isUsageStatsPermissionGiven : LiveData<Boolean>
+        get() {
+            _isUsageStatsPermissionGiven.value =
+                hasUsageStatsPermission(appContext)
+            return _isUsageStatsPermissionGiven
         }
 
     /**

@@ -58,6 +58,10 @@
     <string name="background_service_notification_summaryOn">The service is able to send notification, you will be able to see each notification even while the app is close and the service is running</string>
     <string name="background_service_notification_summaryOff">There will be no visual indication if the service is running in the background while the app is closed, the service might be running and it might not</string>
     <string name="background_service_notification_title">Let the service show notifications</string>
+    <string name="usage_stats_permissions_key">usage_stats_permissions_key</string>
     <string name="throw_exception">throw exception</string>
+    <string name="usage_status_permiision_off_summary">The application will not know how you use your phone, it will still show when you used your phone</string>
+    <string name="usage_Status_permissions_on_summary">The application will save your data on how you use your applications and provide reports</string>
+    <string name="usage_status_permissions_tittle">Let this application see usage of other applications</string>
 
 </resources>
