@@ -9,6 +9,9 @@ import android.os.PowerManager
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
 import androidx.preference.PreferenceManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import millich.michael.myphoneandi.utils.MLog
 import millich.michael.myphoneandi.utils.hasUsageStatsPermission
 
 class SettingsViewModel(application: Application): AndroidViewModel(application) {
@@ -16,33 +19,30 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
         val TAG = "SettingsViewModel"
     }
     private val appContext: Context  get() {return  getApplication<Application>().applicationContext}
-    private var _isIgnoringBatteryOptimizationsGiven : MutableLiveData<Boolean> = MutableLiveData(false)
-    val isIgnoringBatteryOptimizationsGiven : LiveData<Boolean>
-        get() {
-            val powerManager = appContext.getSystemService(Context.POWER_SERVICE) as PowerManager
-            val packageName = appContext.packageName
-            _isIgnoringBatteryOptimizationsGiven.value = powerManager.isIgnoringBatteryOptimizations(packageName)
-            return  _isIgnoringBatteryOptimizationsGiven
+
+    fun isIgnoringBatteryOptimizationsGiven() : Boolean {
+        val powerManager = appContext.getSystemService(Context.POWER_SERVICE) as PowerManager
+        val packageName = appContext.packageName
+        return powerManager.isIgnoringBatteryOptimizations(packageName)
+    }
+
+    fun isNotificationPermissionGiven() : Boolean {
+        val permissionStatus = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ContextCompat.checkSelfPermission(appContext, Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            PackageManager.PERMISSION_GRANTED
         }
-    private var _isNotificationPermissionGiven = MutableLiveData(false)
-    val isNotificationPermissionGiven : LiveData<Boolean>
-        get() {
-            val permissionStatus = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                ContextCompat.checkSelfPermission(appContext, Manifest.permission.POST_NOTIFICATIONS)
-            } else {
-                PackageManager.PERMISSION_GRANTED
-            }
-            _isNotificationPermissionGiven.value =
-                permissionStatus == PackageManager.PERMISSION_GRANTED
-            return _isNotificationPermissionGiven
+        return permissionStatus == PackageManager.PERMISSION_GRANTED
+    }
+
+    fun isUsageStatsPermissionGiven() : Boolean {
+        var status = false
+        runBlocking(Dispatchers.IO) {
+            status = hasUsageStatsPermission(appContext)
+            MLog.d(TAG, "permission? = $status")
         }
-    private var _isUsageStatsPermissionGiven = MutableLiveData(false)
-    val isUsageStatsPermissionGiven : LiveData<Boolean>
-        get() {
-            _isUsageStatsPermissionGiven.value =
-                hasUsageStatsPermission(appContext)
-            return _isUsageStatsPermissionGiven
-        }
+        return status
+    }
 
     /**
      * Write the battery optimization status to the shared preference of the application

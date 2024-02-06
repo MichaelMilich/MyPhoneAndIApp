@@ -56,18 +56,22 @@ class SettingsFragment : PreferenceFragmentCompat() {
      */
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
+        checkPermissionsUI()
+    }
 
-        // check if permission is given for the battery optimization and set it in the start of the fragment
+    private fun checkPermissionsUI() {
         val batteryPref  = findPreference<SwitchPreferenceCompat>(resources.getString(R.string.background_service_run_battery_optimization))
-        val batteryPrefActualValue = viewModel.isIgnoringBatteryOptimizationsGiven.value ?: false
+        val batteryPrefActualValue = viewModel.isIgnoringBatteryOptimizationsGiven()
         batteryPref?.isChecked =batteryPrefActualValue
 
         val notificationPref = findPreference<SwitchPreferenceCompat>(resources.getString(R.string.show_notification_key))
-        val notifPrefActualValue = viewModel.isNotificationPermissionGiven.value ?: false
+        val notifPrefActualValue = viewModel.isNotificationPermissionGiven()
         notificationPref?.isChecked =notifPrefActualValue
 
         val userStatsPref = findPreference<SwitchPreferenceCompat>(resources.getString(R.string.usage_stats_permissions_key))
-        val userStatsPrefActualValue = viewModel.isUsageStatsPermissionGiven.value ?: false
+        val userStatsPrefActualValue = viewModel.isUsageStatsPermissionGiven()
+        MLog.d(TAG, "viewmodel permissions permissions? = ${viewModel.isUsageStatsPermissionGiven()}")
+        MLog.d(TAG, "does the fragment think we have permissions? = $userStatsPrefActualValue")
         userStatsPref?.isChecked =userStatsPrefActualValue
     }
 
@@ -76,6 +80,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
      */
     override fun onResume() {
         super.onResume()
+        checkPermissionsUI()
         preferenceManager.sharedPreferences?.registerOnSharedPreferenceChangeListener(listener)
     }
 
@@ -93,7 +98,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
      */
     private val getResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
         val batteryPref  = findPreference<SwitchPreferenceCompat>(resources.getString(R.string.background_service_run_battery_optimization))
-        val batteryPrefActualValue = viewModel.isIgnoringBatteryOptimizationsGiven.value ?: false
+        val batteryPrefActualValue = viewModel.isIgnoringBatteryOptimizationsGiven()
         batteryPref?.isChecked =batteryPrefActualValue
         viewModel.writeBooleanPref(resources.getString(R.string.background_service_run_battery_optimization),batteryPrefActualValue)
     }
@@ -117,7 +122,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
      */
     private fun onBatteryOptimizationPreferenceClicked(sharedPreferences : SharedPreferences, key: String){
         val value = sharedPreferences.getBoolean(key, false)
-        val actualValue = viewModel.isIgnoringBatteryOptimizationsGiven.value!!
+        val actualValue = viewModel.isIgnoringBatteryOptimizationsGiven()
         if (value && !actualValue) {
             openPowerSettings()
         }
@@ -154,7 +159,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun onShowNotificationClicked(sharedPreferences : SharedPreferences, key: String) {
         val value = sharedPreferences.getBoolean(key, false)
-        var actualValue = viewModel.isNotificationPermissionGiven.value ?:false
+        var actualValue = viewModel.isNotificationPermissionGiven()
         if (actualValue && !value){
             MLog.i(TAG,"user wants to delete the notification permissions")
             Toast.makeText(requireContext(),"The app can't disable this by itself, sending you to appropriate page to disable ",Toast.LENGTH_LONG).show()
@@ -162,7 +167,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             val uri = Uri.fromParts("package", requireContext().packageName,null)
             intent.setData(uri)
             startActivity(intent)
-            actualValue = viewModel.isNotificationPermissionGiven.value ?:false
+            actualValue = viewModel.isNotificationPermissionGiven()
             viewModel.writeBooleanPref(resources.getString(R.string.show_notification_key), actualValue)
         }
         if (!actualValue && value) {
@@ -174,7 +179,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     private fun onUsageStatsPreferenceClicked(sharedPreferences : SharedPreferences, key: String){
         val value = sharedPreferences.getBoolean(key, false)
-        var actualValue = viewModel. isUsageStatsPermissionGiven.value ?:false
+        var actualValue = viewModel. isUsageStatsPermissionGiven()
         if (actualValue != value){
             MLog.i(TAG,"user wants to change the usage status permissions")
             Toast.makeText(requireContext(),"The app can't change this permission itself, sending you to the relevant page ",Toast.LENGTH_LONG).show()
@@ -182,14 +187,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
             val uri = Uri.fromParts("package", requireContext().packageName,null)
             intent.setData(uri)
             startActivity(intent)
-            actualValue = viewModel.isUsageStatsPermissionGiven.value ?:false
+            actualValue = viewModel.isUsageStatsPermissionGiven()
             viewModel.writeBooleanPref(resources.getString(R.string.usage_stats_permissions_key), actualValue)
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (requestCode == REQUEST_CODE_POST_NOTIFICATIONS) {
-            val actualValue = viewModel.isNotificationPermissionGiven.value ?:false
+            val actualValue = viewModel.isNotificationPermissionGiven()
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 // Permission was granted, show some message or take action
                 viewModel.writeBooleanPref(resources.getString(R.string.show_notification_key), actualValue)

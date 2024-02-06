@@ -5,6 +5,7 @@ import android.Manifest
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.Intent
@@ -211,16 +212,28 @@ class MyService: Service()  {
         if (usageStatsManager == null)
             usageStatsManager = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
 
-//        if (hasUsageStatsPermission(applicationContext)) {
-//            MLog.w(TAG,"[usage stats] permission not granted not collecting info")
-//            return
-//        }
+        if (hasUsageStatsPermission(applicationContext)) {
+            MLog.w(TAG,"[usage stats] permission not granted not collecting info")
+            return
+        }
 //        MLog.i(TAG,"[usage stats] permission  granted  collecting info")
-        val usageStatsList = usageStatsManager?.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, startTime, stopTime)
-        MLog.d(TAG,"[usage stats] between ${formatDateFromMillisecondsLong(startTime)} and ${formatDateFromMillisecondsLong(stopTime)}")
-        usageStatsList?.forEach { usageStat ->
-            MLog.d(TAG,"[usage stats] Package name: ${usageStat.packageName}")
-            MLog.d(TAG,"[usage stats] Total time in foreground: ${usageStat.totalTimeInForeground}")
+//        val usageStatsList = usageStatsManager?.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, startTime, stopTime)
+//        MLog.d(TAG,"[usage stats] between ${formatDateFromMillisecondsLong(startTime)} and ${formatDateFromMillisecondsLong(stopTime)}")
+//        MLog.d(TAG, "is usageStatsList null ? = ${usageStatsList==null}")
+//        MLog.d(TAG, "what is usageStatsList  = $usageStatsList")
+//        usageStatsList?.forEach { usageStat ->
+//            MLog.d(TAG,"[usage stats] Package name: ${usageStat.packageName}")
+//            MLog.d(TAG,"[usage stats] Total time in foreground: ${usageStat.totalTimeInForeground}")
+//        }
+        MLog.i(TAG,"[usage stats] permission  granted  collecting info")
+        val events = usageStatsManager?.queryEvents(startTime, stopTime)
+        MLog.i(TAG,"[usage stats] what is events  = $events")
+        MLog.i(TAG,"[usage stats] is ebvents null?  = ${events==null}")
+        val event = UsageEvents.Event()
+        while (events?.hasNextEvent() ==true) {
+            events.getNextEvent(event)
+            MLog.i(TAG,"[usage stats] event package = ${event.packageName} at timestamp = ${event.timeStamp} , event type = ${event.eventType}")
+            // Analyze the event
         }
     }
 

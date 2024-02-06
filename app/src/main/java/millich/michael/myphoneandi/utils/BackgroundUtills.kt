@@ -34,6 +34,8 @@ fun hasUsageStatsPermission(context: Context): Boolean {
     val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
     val mode = appOps.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
         android.os.Process.myUid(), context.packageName)
+    MLog.d("Usage_Stats", "usage stats permissions = $mode")
+    MLog.d("Usage_Stats", "is permission granted? = ${mode == AppOpsManager.MODE_ALLOWED}")
     return mode == AppOpsManager.MODE_ALLOWED
 }
 
