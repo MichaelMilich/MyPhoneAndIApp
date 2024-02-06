@@ -1,8 +1,10 @@
 package millich.michael.myphoneandi.background
 
 
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ServiceInfo
@@ -14,6 +16,8 @@ import androidx.core.app.ServiceCompat
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import millich.michael.myphoneandi.MainActivity
 import millich.michael.myphoneandi.R
@@ -23,7 +27,10 @@ import millich.michael.myphoneandi.utils.CHANNEL_ID_1
 import millich.michael.myphoneandi.utils.CustomExceptionHandler
 import millich.michael.myphoneandi.utils.MLog
 import millich.michael.myphoneandi.utils.ONGOING_NOTIFICATION_ID
+import millich.michael.myphoneandi.utils.SERVICE_START_NOTIFICATION_LOOP
+import millich.michael.myphoneandi.utils.SERVICE_STOP_NOTIFICATION_LOOP
 import millich.michael.myphoneandi.utils.STOP_MY_SERVICE
+import millich.michael.myphoneandi.utils.calculateTodayPhoneTime
 import millich.michael.myphoneandi.utils.getCurrentDateInMilli
 
 /**
@@ -38,12 +45,15 @@ class MyService: Service()  {
     inner class LocalBinder : Binder() {
         fun getService() : MyService =this@MyService
     }
-    private val binder = LocalBinder()
-    lateinit var database: ScreenEventDatabaseDAO
-    var isServiceRunning =false // if the service is already running, don't create another broadcast receiver and don't show new notifications
     override fun onBind(intent: Intent): IBinder {
         return binder
     }
+
+    private val binder = LocalBinder()
+    lateinit var database: ScreenEventDatabaseDAO
+    var notificationJob : Job? =null
+    var isServiceRunning =false // if the service is already running, don't create another broadcast receiver and don't show new notifications
+
 
     /**
      * Set up the service
@@ -68,17 +78,23 @@ class MyService: Service()  {
      */
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         MLog.w(TAG, "[onStartCommand] intent = $intent, flags = $flags, startId = $startId")
-        if(STOP_MY_SERVICE == intent?.action)
-        {
-            stopSelf()
-            return super.onStartCommand(intent, flags, startId)
+        intent?.let {
+            when(it.action){
+                SERVICE_STOP_NOTIFICATION_LOOP -> notificationLoop(true)
+                SERVICE_START_NOTIFICATION_LOOP -> notificationLoop(false)
+                STOP_MY_SERVICE -> {
+                    stopSelf()
+                    return super.onStartCommand(intent, flags, startId)
+                }
+            }
         }
         if(isServiceRunning) {
             return START_STICKY
         }
         CoroutineScope(Dispatchers.IO).launch {
             val unlockCount =database.getTodayScreenEventCountAfterTimeNoLiveData(getCurrentDateInMilli())
-            showNotificationAndStartForeground(" $unlockCount  unlocks today" , "")
+            val timeToday = calculateTodayPhoneTime(database, TAG)
+            showNotificationAndStartForeground("$timeToday on the phone today " , "$unlockCount  unlocks today")
         }
         MLog.i(TAG, "inside MyService onStartCommand")
         registerReceiver(UnlockBroadcastReceiver, IntentFilter(Intent.ACTION_USER_PRESENT))
@@ -92,6 +108,26 @@ class MyService: Service()  {
         return START_STICKY
     }
 
+    private fun notificationLoop(shouldStop : Boolean){
+        val status = if (shouldStop) "stop" else "start"
+        MLog.d(TAG, "calling to $status the notification loop")
+        if (shouldStop)
+            notificationJob?.cancel()
+        else if (!shouldStop){
+            notificationJob = CoroutineScope(Dispatchers.IO).launch {
+                while (true){
+                    delay(1000*60) // delay for a whole minute
+                    val unlockCount =database.getTodayScreenEventCountAfterTimeNoLiveData(getCurrentDateInMilli())
+                    val timeToday = calculateTodayPhoneTime(database, TAG)
+                    val title = "$timeToday on the phone today "
+                    val message = "$unlockCount  unlocks today"
+                    MLog.d(TAG, "[notificationLoop] updating the notification with title ='$title', message = '$message'")
+                    showNotification(title , message)
+                }
+            }
+        }
+    }
+
     /**
      * Clean the service and destroy
      * Dont froget to unregister reciver.
@@ -101,6 +137,7 @@ class MyService: Service()  {
         stopForeground(true)
         unregisterReceiver(UnlockBroadcastReceiver)
         unregisterReceiver(ScreenOffReceiver)
+        notificationJob?.cancel()
         super.onDestroy()
     }
 
@@ -136,6 +173,26 @@ class MyService: Service()  {
                  0
              })
         startForeground(ONGOING_NOTIFICATION_ID,notification)
+    }
+
+    private fun showNotification( title: String, message: String) {
+        val mNotificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val intent = Intent(applicationContext, MainActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+
+        val stopIntent = Intent(applicationContext, MyService::class.java)
+        stopIntent.action= STOP_MY_SERVICE
+        val pendingStopIntent = PendingIntent.getService(applicationContext,0,stopIntent, PendingIntent.FLAG_IMMUTABLE)
+
+        val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID_1)
+            .setSmallIcon(R.drawable.ic_my_phone_and_i_notification_option2) // notification icon
+            .setContentTitle(title) // title for notification
+            .setContentText(message)// message for notification
+            .setContentIntent(pendingIntent)
+            .addAction(R.drawable.ic_my_phone_and_i_notification_option2,applicationContext.resources.getString(R.string.stop_service),pendingStopIntent)
+            .setOngoing(true)
+            .build()
+        mNotificationManager.notify(ONGOING_NOTIFICATION_ID, notification)
     }
 
 

@@ -9,8 +9,18 @@ import millich.michael.myphoneandi.database.ScreenEvent
 import millich.michael.myphoneandi.database.ScreenEventDatabase
 import millich.michael.myphoneandi.database.ScreenEventType
 import millich.michael.myphoneandi.utils.MLog
+import millich.michael.myphoneandi.utils.SERVICE_START_NOTIFICATION_LOOP
+import millich.michael.myphoneandi.utils.SERVICE_STOP_NOTIFICATION_LOOP
+import millich.michael.myphoneandi.utils.SERVICE_STOP_NOTIFICATION_LOOP_INT
 import millich.michael.myphoneandi.utils.getCurrentDateInMilli
 
+
+/**
+ * Broadcast Receiver for screenOff messages from the android system.
+ * There is only one screenOff receiver so this is a static class - aka object.
+ * This receiver will update the database when the user screen went off if the user was active.
+ * NOTE, this Receiver is registered dynamically from the service since it can't be registered from the manifest.
+ */
 object ScreenOffReceiver : BasicBroadcastRecevier() {
     override val TAG = "ScreenOffReceiver"
     override fun onRecieveCallback(context: Context, intent: Intent) {
@@ -29,6 +39,13 @@ object ScreenOffReceiver : BasicBroadcastRecevier() {
                 eventType = ScreenEventType.ScreenOff.value
             )
             MLog.d(TAG, "updating notification : '$screenOffCount  screen off today' ")
+            serviceStopNotificationJob(context)
         }
+    }
+
+    private fun serviceStopNotificationJob(context: Context){
+        val intent = Intent(context, MyService::class.java)
+        intent.action = SERVICE_STOP_NOTIFICATION_LOOP
+        context.startService(intent)
     }
 }

@@ -12,18 +12,19 @@ import millich.michael.myphoneandi.MainActivity
 import millich.michael.myphoneandi.R
 import millich.michael.myphoneandi.database.ScreenEventDatabase
 import millich.michael.myphoneandi.database.ScreenEvent
-import millich.michael.myphoneandi.database.ScreenEventDatabaseDAO
 import millich.michael.myphoneandi.database.ScreenEventType
 import millich.michael.myphoneandi.utils.CHANNEL_ID_1
 import millich.michael.myphoneandi.utils.MLog
 import millich.michael.myphoneandi.utils.ONGOING_NOTIFICATION_ID
+import millich.michael.myphoneandi.utils.SERVICE_START_NOTIFICATION_LOOP
 import millich.michael.myphoneandi.utils.STOP_MY_SERVICE
-import millich.michael.myphoneandi.utils.formatDateFromMillisecondsLong
-import millich.michael.myphoneandi.utils.formatDuration
 import millich.michael.myphoneandi.utils.getCurrentDateInMilli
+import millich.michael.myphoneandi.utils.calculateTodayPhoneTime
 
 /**
- * todo: completely document this static class.
+ * Broadcast Receiver for unlock messages from the android system.
+ * There is only one unlock receiver so this is a static class - aka object.
+ * This receiver will update the last time of unlock and also update the notifications of the application.
  * NOTE, this Receiver is registered dynamically from the service since it can't be registered from the manifest.
  */
 object UnlockBroadcastReceiver : BasicBroadcastRecevier() {
@@ -35,38 +36,16 @@ object UnlockBroadcastReceiver : BasicBroadcastRecevier() {
         CoroutineScope(Dispatchers.IO).launch {
             database.Insert(unlockEvent)
 
-            val timeToday = calculateTodayPhoneTime(database)
+            val timeToday = calculateTodayPhoneTime(database, TAG)
             val newUnlockTime = database.getLastUnlock()?.eventTime ?: System.currentTimeMillis()
+            val unlockCount = database.getTodayScreenEventCountAfterTimeNoLiveData(getCurrentDateInMilli())
             MLog.d(TAG, "updating notification : 'phone time today = $timeToday' ")
-            showNotification(context,"$timeToday on the phone today " ,"last unlock time at ${formatDateFromMillisecondsLong(newUnlockTime)}")
+            showNotification(context,"$timeToday on the phone today " ,"$unlockCount unlocks today")
+            serviceStartNotificationJob(context)
         }
     }
 
-    /**
-     * Calculates the time the user used the phone.
-     * We call this calculation here and not in screenOff broadcast receiver because the notification should be called when the user is active.
-     * The function calculates the time using this equation:
-     * phone_time = sum_timestamp_screenOff + current_timestamp - sum_timestamp_screenOn
-     * For that we need to find the time of the first screenOn and calculate from there.
-     * This is because sometimes when installing the app a screenOff will happen before ScreenOn.
-     * todo: make this a utill function that runs on Dispatcher.IO - I might use it in another places.
-     */
-    private fun calculateTodayPhoneTime(database: ScreenEventDatabaseDAO) : String{
-        val firstScreenOnTimeForToday = database.getTimeOfFirstUnlockFromTime(getCurrentDateInMilli())
-        val screenOnTimestampSum = database.getSumOfTimestampsFromTime(getCurrentDateInMilli(), ScreenEventType.ScreenOn.value)?: System.currentTimeMillis()
 
-        val screenOffTimestampSum = firstScreenOnTimeForToday?.let {
-            database.getSumOfTimestampsFromTime(
-                it,ScreenEventType.ScreenOff.value )
-        }
-        val timeSpentMilliseconds = System.currentTimeMillis()+ (screenOffTimestampSum?: 0L) - screenOnTimestampSum
-        MLog.d(TAG, "firstScreenOnTimeForToday = $firstScreenOnTimeForToday")
-        MLog.d(TAG, "screenOnTimestampSum = $screenOnTimestampSum")
-        MLog.d(TAG, "screenOffTimestampSum = $screenOffTimestampSum")
-        MLog.d(TAG, "System.currentTimeMillis() = ${(System.currentTimeMillis())}")
-        MLog.d(TAG, "time spent on phone in milliseconds = $timeSpentMilliseconds")
-        return formatDuration(timeSpentMilliseconds)
-    }
 
     private fun showNotification(context: Context, title: String, message: String) {
         val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -86,5 +65,11 @@ object UnlockBroadcastReceiver : BasicBroadcastRecevier() {
             .setOngoing(true)
             .build()
         mNotificationManager.notify(ONGOING_NOTIFICATION_ID, notification)
+    }
+
+    private fun serviceStartNotificationJob(context: Context){
+        val intent = Intent(context, MyService::class.java)
+        intent.action = SERVICE_START_NOTIFICATION_LOOP
+        context.startService(intent)
     }
 }
