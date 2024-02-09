@@ -6,7 +6,7 @@
     <data>
         <variable
             name="unlockEvent"
-            type="millich.michael.myphoneandi.database.ScreenEvent" />
+            type="millich.michael.myphoneandi.database.screenevents.ScreenEvent" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import millich.michael.myphoneandi.database.ScreenEvent
+import millich.michael.myphoneandi.database.screenevents.ScreenEvent
 import millich.michael.myphoneandi.databinding.ListItemUnlockEventBinding
 
 class UnlockEventAdapter : ListAdapter<ScreenEvent, UnlockEventAdapter.ViewHolder>(UnlockEventDiffCallback()) {

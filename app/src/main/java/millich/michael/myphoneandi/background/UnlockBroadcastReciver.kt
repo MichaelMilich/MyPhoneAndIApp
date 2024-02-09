@@ -10,9 +10,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import millich.michael.myphoneandi.MainActivity
 import millich.michael.myphoneandi.R
-import millich.michael.myphoneandi.database.ScreenEventDatabase
-import millich.michael.myphoneandi.database.ScreenEvent
-import millich.michael.myphoneandi.database.ScreenEventType
+import millich.michael.myphoneandi.database.screenevents.ScreenEventDatabase
+import millich.michael.myphoneandi.database.screenevents.ScreenEvent
+import millich.michael.myphoneandi.database.screenevents.ScreenEventType
 import millich.michael.myphoneandi.utils.CHANNEL_ID_1
 import millich.michael.myphoneandi.utils.MLog
 import millich.michael.myphoneandi.utils.ONGOING_NOTIFICATION_ID

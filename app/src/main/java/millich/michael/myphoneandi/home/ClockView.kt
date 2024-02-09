@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import millich.michael.myphoneandi.R
-import millich.michael.myphoneandi.database.ScreenEvent
+import millich.michael.myphoneandi.database.screenevents.ScreenEvent
 import millich.michael.myphoneandi.databinding.ClockViewBinding
 import millich.michael.myphoneandi.utils.calculateAngle
 import kotlin.math.cos

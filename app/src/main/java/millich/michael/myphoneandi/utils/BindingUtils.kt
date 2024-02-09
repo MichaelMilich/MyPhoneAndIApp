@@ -4,7 +4,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import millich.michael.myphoneandi.R
-import millich.michael.myphoneandi.database.ScreenEvent
+import millich.michael.myphoneandi.database.screenevents.ScreenEvent
 import millich.michael.myphoneandi.home.ClockView
 import millich.michael.myphoneandi.home.HomeViewModel
 

@@ -15,8 +15,7 @@ package millich.michael.myphoneandi.utils
 
 import android.view.View
 import android.view.ViewTreeObserver
-import androidx.lifecycle.LiveData
-import millich.michael.myphoneandi.database.ScreenEvent
+import millich.michael.myphoneandi.database.screenevents.ScreenEvent
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -89,6 +88,11 @@ fun getCurrentTimeInStringUnderScore(): String
     simpleDateFormat.timeZone = TimeZone.getDefault()
     return simpleDateFormat.format(calendar.time)
 }
+
+/**
+ * returns the start of the day in milliseconds.
+ * meaning it will return the timestamp of today 00:00
+ */
 fun getCurrentDateInMilli() : Long{
     val today = Calendar.getInstance()
     today.set(Calendar.MILLISECOND,0)

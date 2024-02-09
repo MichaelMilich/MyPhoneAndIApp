@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import dagger.hilt.android.lifecycle.HiltViewModel
-import millich.michael.myphoneandi.database.ScreenEvent
-import millich.michael.myphoneandi.database.ScreenEventDatabaseDAO
+import millich.michael.myphoneandi.database.screenevents.ScreenEvent
+import millich.michael.myphoneandi.database.screenevents.ScreenEventDatabaseDAO
 import millich.michael.myphoneandi.utils.MLog
 import millich.michael.myphoneandi.utils.formatDateFromMillisecondsLong
 import millich.michael.myphoneandi.utils.formatSimpleDate

@@ -5,13 +5,11 @@ import android.content.Intent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import millich.michael.myphoneandi.database.ScreenEvent
-import millich.michael.myphoneandi.database.ScreenEventDatabase
-import millich.michael.myphoneandi.database.ScreenEventType
+import millich.michael.myphoneandi.database.screenevents.ScreenEvent
+import millich.michael.myphoneandi.database.screenevents.ScreenEventDatabase
+import millich.michael.myphoneandi.database.screenevents.ScreenEventType
 import millich.michael.myphoneandi.utils.MLog
-import millich.michael.myphoneandi.utils.SERVICE_START_NOTIFICATION_LOOP
 import millich.michael.myphoneandi.utils.SERVICE_STOP_NOTIFICATION_LOOP
-import millich.michael.myphoneandi.utils.SERVICE_STOP_NOTIFICATION_LOOP_INT
 import millich.michael.myphoneandi.utils.getCurrentDateInMilli
 
 

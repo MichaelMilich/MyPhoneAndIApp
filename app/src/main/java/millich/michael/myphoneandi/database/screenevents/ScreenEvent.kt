@@ -1,4 +1,4 @@
-package millich.michael.myphoneandi.database
+package millich.michael.myphoneandi.database.screenevents
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

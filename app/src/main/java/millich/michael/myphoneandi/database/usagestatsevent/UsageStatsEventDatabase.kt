@@ -1,24 +1,26 @@
-package millich.michael.myphoneandi.database
+package millich.michael.myphoneandi.database.usagestatsevent
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import millich.michael.myphoneandi.database.screenevents.ScreenEventDatabaseDAO
+
 
 /**
- * A database that stores UnlockEvent information.
+ * A database that stores UsageStatsEvent information.
  * And a global method to get access to the database.
  *
  * This pattern is pretty much the same for any database,
  * so you can reuse it.
  * I AM :)
  */
-@Database(entities = [ScreenEvent::class], version = 2, exportSchema = false)
-abstract class ScreenEventDatabase : RoomDatabase() {
+@Database(entities = [UsageStatsEvent::class], version = 1, exportSchema = false)
+abstract class UsageStatsEventDatabase : RoomDatabase() {
     /**
      * Connects the database to the DAO.
      */
-    abstract val screenEventDatabaseDAO: ScreenEventDatabaseDAO
+    abstract val usageStatsEventDatabaseDAO: UsageStatsEventDatabaseDAO
 
     /**
      * Define a companion object, this allows us to add functions on the SleepDatabase class.
@@ -37,7 +39,7 @@ abstract class ScreenEventDatabase : RoomDatabase() {
          *  thread to shared data are visible to other threads.
          */
         @Volatile
-        private var INSTANCE: ScreenEventDatabase? = null
+        private var INSTANCE: UsageStatsEventDatabase? = null
 
         /**
          * Helper function to get the database.
@@ -56,7 +58,7 @@ abstract class ScreenEventDatabase : RoomDatabase() {
          *
          * @param context The application context Singleton, used to get access to the filesystem.
          */
-        fun getInstance(context: Context): ScreenEventDatabase {
+        fun getInstance(context: Context): UsageStatsEventDatabase {
             // Multiple threads can ask for the database at the same time, ensure we only initialize
             // it once by using synchronized. Only one thread may enter a synchronized block at a
             // time.
@@ -69,7 +71,7 @@ abstract class ScreenEventDatabase : RoomDatabase() {
                 if (instance == null) {
                     instance = Room.databaseBuilder(
                         context.applicationContext,
-                        ScreenEventDatabase::class.java,
+                        UsageStatsEventDatabase::class.java,
                         "screen_event_table"
                     )
                         // Wipes and rebuilds instead of migrating if no Migration object.

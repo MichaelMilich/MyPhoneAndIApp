@@ -5,8 +5,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
-import millich.michael.myphoneandi.database.ScreenEventDatabase
-import millich.michael.myphoneandi.database.ScreenEventDatabaseDAO
+import millich.michael.myphoneandi.database.screenevents.ScreenEventDatabase
+import millich.michael.myphoneandi.database.screenevents.ScreenEventDatabaseDAO
 
 
 @Module

@@ -18,7 +18,7 @@ import androidx.preference.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import millich.michael.myphoneandi.R
-import millich.michael.myphoneandi.database.ScreenEvent
+import millich.michael.myphoneandi.database.screenevents.ScreenEvent
 import millich.michael.myphoneandi.databinding.FragmentHomeBinding
 import millich.michael.myphoneandi.utils.MLog
 import millich.michael.myphoneandi.utils.afterMeasured

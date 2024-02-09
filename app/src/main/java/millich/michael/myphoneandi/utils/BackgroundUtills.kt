@@ -3,8 +3,8 @@ package millich.michael.myphoneandi.utils
 import android.app.AppOpsManager
 import android.app.usage.UsageEvents
 import android.content.Context
-import millich.michael.myphoneandi.database.ScreenEventDatabaseDAO
-import millich.michael.myphoneandi.database.ScreenEventType
+import millich.michael.myphoneandi.database.screenevents.ScreenEventDatabaseDAO
+import millich.michael.myphoneandi.database.screenevents.ScreenEventType
 
 /**
  * Calculates the time the user used the phone.
@@ -14,7 +14,7 @@ import millich.michael.myphoneandi.database.ScreenEventType
  * For that we need to find the time of the first screenOn and calculate from there.
  * This is because sometimes when installing the app a screenOff will happen before ScreenOn.
  */
-fun calculateTodayPhoneTime(database: ScreenEventDatabaseDAO,firstCallTime : Long, tag: String) : String{
+fun calculateTodayPhoneTime(database: ScreenEventDatabaseDAO, firstCallTime : Long, tag: String) : String{
     val firstScreenOnTimeForToday = database.getTimeOfFirstUnlockFromTime(getCurrentDateInMilli())
     val screenOnTimestampSum = database.getSumOfTimestampsFromTime(getCurrentDateInMilli(), ScreenEventType.ScreenOn.value)?: firstCallTime
 

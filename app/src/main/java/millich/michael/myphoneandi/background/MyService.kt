@@ -4,7 +4,6 @@ package millich.michael.myphoneandi.background
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
-import android.app.usage.UsageEvents
 import android.app.usage.UsageEvents.Event
 import android.app.usage.UsageStatsManager
 import android.content.Context
@@ -17,6 +16,9 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.preference.PreferenceManager
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -24,8 +26,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import millich.michael.myphoneandi.MainActivity
 import millich.michael.myphoneandi.R
-import millich.michael.myphoneandi.database.ScreenEventDatabase
-import millich.michael.myphoneandi.database.ScreenEventDatabaseDAO
+import millich.michael.myphoneandi.database.screenevents.ScreenEventDatabase
+import millich.michael.myphoneandi.database.screenevents.ScreenEventDatabaseDAO
 import millich.michael.myphoneandi.utils.CHANNEL_ID_1
 import millich.michael.myphoneandi.utils.CustomExceptionHandler
 import millich.michael.myphoneandi.utils.MLog
@@ -38,6 +40,7 @@ import millich.michael.myphoneandi.utils.eventTypeToString
 import millich.michael.myphoneandi.utils.formatDateFromMillisecondsLong
 import millich.michael.myphoneandi.utils.getCurrentDateInMilli
 import millich.michael.myphoneandi.utils.hasUsageStatsPermission
+import java.util.concurrent.TimeUnit
 
 /**
  * The service that runs with the application.
@@ -59,6 +62,7 @@ class MyService: Service()  {
     lateinit var database: ScreenEventDatabaseDAO
     private var notificationJob : Job? =null
     private var isServiceRunning =false // if the service is already running, don't create another broadcast receiver and don't show new notifications
+    private var isWorkerEnqueued = false
     private  var usageStatsManager :UsageStatsManager? =null
 
 
@@ -96,6 +100,7 @@ class MyService: Service()  {
             }
         }
         if(isServiceRunning) {
+            startBackgroundWorker()
             return START_STICKY
         }
         CoroutineScope(Dispatchers.IO).launch {
@@ -107,6 +112,8 @@ class MyService: Service()  {
         MLog.i(TAG, "inside MyService onStartCommand")
         registerReceiver(UnlockBroadcastReceiver, IntentFilter(Intent.ACTION_USER_PRESENT))
         registerReceiver(ScreenOffReceiver, IntentFilter(Intent.ACTION_SCREEN_OFF))
+        startBackgroundWorker()
+
         isServiceRunning=true
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         val editor = sharedPreferences.edit()
@@ -114,6 +121,25 @@ class MyService: Service()  {
         editor.apply()
 
         return START_STICKY
+    }
+
+    private fun startBackgroundWorker(){
+        if (isWorkerEnqueued)
+            return
+        if (!hasUsageStatsPermission(applicationContext))
+            return
+//        val workerRequest :WorkRequest = PeriodicWorkRequestBuilder<UsageEventLogWorker>(
+//            1, TimeUnit.HOURS, // repeatInterval (the period cycle)
+//            15, TimeUnit.MINUTES) // flexInterval
+//            .addTag("logging usage events")
+//            .build()
+        val workerRequest :WorkRequest = PeriodicWorkRequestBuilder<UsageEventLogWorker>(
+            15, TimeUnit.MINUTES) // repeatInterval (the period cycle)
+            .addTag("logging usage events")
+            .build()
+        WorkManager.getInstance(applicationContext).enqueue(workerRequest)
+        MLog.d(TAG, "starting background worker")
+        isWorkerEnqueued =true
     }
 
     private fun notificationLoop(shouldStop : Boolean){
@@ -134,7 +160,7 @@ class MyService: Service()  {
                     val message = "$unlockCount  unlocks today"
                     MLog.d(TAG, "[notificationLoop] updating the notification with title ='$title', message = '$message'")
                     showNotification(title , message)
-                    logUserActivity(timestampStart,timestampStop)
+//                    logUserActivity(timestampStart,timestampStop)
                 }
             }
         }
@@ -150,6 +176,8 @@ class MyService: Service()  {
         unregisterReceiver(UnlockBroadcastReceiver)
         unregisterReceiver(ScreenOffReceiver)
         notificationJob?.cancel()
+        WorkManager.getInstance(applicationContext).cancelAllWorkByTag("logging usage events")
+        isWorkerEnqueued =false
         super.onDestroy()
     }
 
